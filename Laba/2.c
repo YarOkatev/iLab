@@ -21,6 +21,7 @@ int main()
   return 0;
 }
 
+
 int ReadData(double U[], double I[])
 {
   FILE* file = fopen ("input.in", "r");
