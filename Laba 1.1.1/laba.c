@@ -43,24 +43,23 @@ int ReadData(double U[], double I[])
 
 int CheckData (double U[], double I[])
 {
-  int sumI = 0, sumU = 0;
+  double sumI = 0, sumU = 0;
   for (int i = 0; i < NWire * NPoints; i++) sumI += I[i];
   for (int i = 0; i < NWire * NPoints; i++) sumU += U[i];
-  if ((abs(sumI) < 0.0000000001) || (abs(sumI) < 0.0000000001))
+  if ((fabs(sumI) < 0.0000000001) || (fabs(sumI) < 0.0000000001))
   {
     printf("Check your input data\n");
     return -1;
   }
-  
   return 0;
 }
 
 void CalculateData (int n, double U[], double I[], double p[], double deltaP[])
 {
   double cov = 0, dispI = 0, R = 0, sumI = 0, dispU = 0, deltaR = 0;
-  cov =  Covariation ((n * NPoints), (NPoints * (n + 1)), U, I);
-  dispI = Dispersion ((n * NPoints), (NPoints * (n + 1)), I);
-  dispU = Dispersion ((n * NPoints), (NPoints * (n + 1)), U);
+  cov =  Covariation ((n * NPoints), (NPoints * (n + 1) - 1), U, I);
+  dispI = Dispersion ((n * NPoints), (NPoints * (n + 1) - 1), I);
+  dispU = Dispersion ((n * NPoints), (NPoints * (n + 1) - 1), U);
   R = cov / dispI;
   deltaR = sqrt((dispU / dispI - R * R) / (NPoints - 2));
   p[n] = R * 3.1415 * D * D / (4 * L[n]);
@@ -71,9 +70,9 @@ double Covariation (int Nstart, int Nfinish, double X[], double Y[])
 {
   double sumX = 0, sumXY = 0, sumY = 0;
   int points = Nfinish - Nstart + 1;
-  for (int i = Nstart; i < Nfinish; i++) sumX  += X[i];
-  for (int i = Nstart; i < Nfinish; i++) sumY  += Y[i];
-  for (int i = Nstart; i < Nfinish; i++) sumXY += Y[i] * X[i];
+  for (int i = Nstart; i <= Nfinish; i++) sumX  += X[i];
+  for (int i = Nstart; i <= Nfinish; i++) sumY  += Y[i];
+  for (int i = Nstart; i <= Nfinish; i++) sumXY += Y[i] * X[i];
   return ((sumXY / points) - (sumX / points) * (sumY / points));
 }
 
@@ -81,8 +80,8 @@ double Dispersion (int Nstart, int Nfinish, double X[])
 {
   double sumdX = 0, sumX = 0;
   int points = Nfinish - Nstart + 1;
-  for (int i = Nstart; i < Nfinish; i++) sumX  += X[i];
-  for (int i = Nstart; i < Nfinish; i++) sumdX += (X[i] - (sumX / points)) * (X[i] - (sumX / points));
+  for (int i = Nstart; i <= Nfinish; i++) sumX  += X[i];
+  for (int i = Nstart; i <= Nfinish; i++) sumdX += (X[i] - (sumX / points)) * (X[i] - (sumX / points));
   return (sumdX / points);
 }
 
