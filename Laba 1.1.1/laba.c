@@ -7,27 +7,30 @@ const double D = 0.356, DeltaD = 0.002;  // diameter in millimetres
 const double L[NWire] = {0.5, 0.3, 0.2}, DeltaL = 0.005; // Lenght in metres
 
 double Covariation (int Nstart, int Nfinish, double X[], double Y[]);
-void CalculateData(int n, double U[], double I[], double p[], double deltaP[]);
-int ReadData(double U[], double I[]);
-int CheckData (double U[], double I[]);
+void CalculateData (int n, double U[], double I[], double p[], double deltaP[]);
+int ReadData (double U[], double I[]);
+int CheckDataZeros (double U[], double I[]);
 double Dispersion (int Nstart, int Nfinish, double X[]);
-int WriteData(double p[], double deltaP[]);
+int CheckData (double U[], double I[], double p[]);
+int WriteData (double p[], double deltaP[]);
 
 int main()
 {
   double I[NPoints * NWire] = {}, U[NPoints * NWire] = {}, p[NWire] = {}, deltaP[NWire] = {};
   int RCheck = -1, DCheck = -1, WCheck = -1;
-  RCheck = ReadData(U, I);
+  RCheck = ReadData (U, I);
   if (RCheck != NPoints * NWire) {printf("Number of points mismatch \n"); return -1;};
-  DCheck = CheckData(U, I);
+  DCheck = CheckDataZeros (U, I);
   if (DCheck != 0) return -1;
-  for (int n = 0; n <= NWire - 1; n++) CalculateData(n, U, I, p, deltaP);
-  WCheck = WriteData(p, deltaP);
+  for (int n = 0; n <= NWire - 1; n++) CalculateData (n, U, I, p, deltaP);
+  DCheck = CheckData (U, I, p);
+  if (DCheck != 0) return -1;
+  WCheck = WriteData (p, deltaP);
   if (WCheck != 0) return -1;
   return 0;
 }
 
-int ReadData(double U[], double I[])
+int ReadData (double U[], double I[])
 {
   FILE* file = fopen ("input.in", "r");
   if (!file) {printf ("Can't open file \n"); return -1;}
@@ -41,11 +44,11 @@ int ReadData(double U[], double I[])
   return line;
 }
 
-int CheckData (double U[], double I[])
+int CheckDataZeros (double U[], double I[])
 {
   double sumI = 0, sumU = 0;
-  for (int i = 0; i < NWire * NPoints; i++) sumI += I[i];
-  for (int i = 0; i < NWire * NPoints; i++) sumU += U[i];
+  for (int i = 0; i <= NWire * NPoints - 1; i++) sumI += I[i];
+  for (int i = 0; i <= NWire * NPoints - 1; i++) sumU += U[i];
   if ((fabs(sumI) < 0.0000000001) || (fabs(sumI) < 0.0000000001))
   {
     printf("Check your input data\n");
@@ -85,7 +88,28 @@ double Dispersion (int Nstart, int Nfinish, double X[])
   return (sumdX / points);
 }
 
-int WriteData(double p[], double deltaP[])
+int CheckData (double U[], double I[], double p[])
+{
+  for (int i = 0; i <= NWire - 1; i++)
+  {
+    double R = p[i] * L [i] / (3.1415 * D * D / 4);
+    for (int j = i * NPoints; j <= NPoints * (i + 1) - 1; j++)
+    {
+      if (I[j] > 0.0000000001)
+      {
+        printf(" %lg %lg %lg %lg \n", U[j], I[j], U[j] / I[j], R );
+        if (fabs(U[j] / I[j] - R) > R / 2)
+        {
+          printf("Check your input data in %d line\n", j);
+          return -1;
+        }
+      }
+    }
+  }
+  return 0;
+}
+
+int WriteData (double p[], double deltaP[])
 {
   FILE* res = fopen ("result.txt", "w");
   if (!res) {printf ("Can't write to file \n"); return -1;}
