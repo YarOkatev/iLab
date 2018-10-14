@@ -51,6 +51,7 @@ int CheckData (double U[], double I[])
     printf("Check your input data\n");
     return -1;
   }
+  
   return 0;
 }
 
