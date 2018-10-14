@@ -97,7 +97,6 @@ int CheckData (double U[], double I[], double p[])
     {
       if (I[j] > 0.0000000001)
       {
-        printf(" %lg %lg %lg %lg \n", U[j], I[j], U[j] / I[j], R );
         if (fabs(U[j] / I[j] - R) > R / 2)
         {
           printf("Check your input data in %d line\n", j);
