@@ -20,7 +20,7 @@ int main()
   double avgP = 0, avgDeltaP = 0;
   int RCheck = -1, DCheck = -1, WCheck = -1;
   RCheck = ReadData (U, I);
-  if (RCheck != NPoints * NWire) {printf("Number of measurements mismatch \n"); return -1;};
+  if (RCheck != 0) return -1;
   DCheck = CheckDataZeros (U, I);
   if (DCheck != 0) return -1;
   for (int n = 0; n <= NWire - 1; n++) CalculateData (n, U, I, p, deltaP, &avgP, &avgDeltaP);
@@ -42,7 +42,12 @@ int ReadData (double U[], double I[])
     line++;
   }
   fclose (file);
-  return line;
+  if (line != NPoints * NWire)
+  {
+    printf("Number of measurements mismatch \n");
+    return -1;
+  }
+  return 0;
 }
 
 int CheckDataZeros (double U[], double I[])
