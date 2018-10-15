@@ -2,29 +2,29 @@
 #include <math.h>
 #include <stdlib.h>
 
-const int NPoints = 200;
+const int DefaultNP = 200;
 
-int CheckDataZeros (int n20[]);
-int ReadData (int n20[]);
-void CalculateData (int n20[], double* avg10, double* avg40, double* delta10, double* delta40);
-void TwentyToFourty (int n20[], int n40[]);
-double AverageValue (int n[], int amnt);
-double Dispersion (int Nstart, int Nfinish, int X[]);
-void MinMax (int n[], int* min, int* max, int amnt);
+int CheckDataZeros ();
+int ReadData ();
+void CalculateData ();
+void TwentyToFourty ();
+double AverageValue ();
+double Dispersion ();
+void MinMax ();
 void ShareCount ();
-int WriteData (double avg10, double avg40, double delta10, double delta40);
+int WriteData ();
 
 int main ()
 {
   double avg10 = 0, avg40 = 0, delta10 = 0, delta40 = 0;
-  int* n20 = (int*) calloc(NPoints, sizeof(int));
-  int RCheck = -1, DCheck = -1, WCheck = -1;
-  RCheck = ReadData (n20);
-  if (RCheck != 0) return -1;
-  DCheck = CheckDataZeros (n20);
+  int* n20 = (int*) calloc(DefaultNP, sizeof(int));
+  int NPoints = 0, DCheck = -1, WCheck = -1;
+  NPoints = ReadData (n20);
+  if (NPoints <= 0) return -1;
+  DCheck = CheckDataZeros (NPoints, n20);
   if (DCheck != 0) return -1;
-  CalculateData (n20, &avg10, &avg40, &delta10, &delta40);
-  WCheck = WriteData (avg10, avg40, delta10, delta40);
+  CalculateData (NPoints, n20, &avg10, &avg40, &delta10, &delta40);
+  WCheck = WriteData (NPoints, avg10, avg40, delta10, delta40);
   if (WCheck != 0) return -1;
   return 0;
 }
@@ -38,17 +38,19 @@ int ReadData (int n20[])
   {
     if (fscanf (file, "%d", &n20[point]) == EOF) break;
     point++;
+    if (point > DefaultNP - 1) n20 = (int*) realloc(n20, (point + 100) * sizeof(int));
   }
   fclose (file);
-  if (point != NPoints)
+  n20 = (int*) realloc(n20, (point + 1) * sizeof(int));
+  if (point <= 10)
   {
-    printf("Number of measurements mismatch\n");
+    printf("Number of measurements is incorrect\n");
     return -1;
   }
-  return 0;
+  return point;
 }
 
-int CheckDataZeros (int n20[])
+int CheckDataZeros (int NPoints, int n20[])
 {
   int sumN = 0;
   for (int i = 0; i <= NPoints - 1; i++) sumN += n20[i];
@@ -60,28 +62,28 @@ int CheckDataZeros (int n20[])
   return 0;
 }
 
-void CalculateData (int n20[], double* avg10, double* avg40, double* delta10, double* delta40)
+void CalculateData (int NPoints, int n20[], double* avg10, double* avg40, double* delta10, double* delta40)
 {
-  int* n40 = (int*) calloc (NPoints / 2, sizeof(int));
+  int* n40 = (int*) calloc ((int)(NPoints / 2 + 0.5), sizeof(int));
   int min40 = 0, max40 = 0;
-  TwentyToFourty (n20, n40);
+  TwentyToFourty (NPoints, n20, n40);
   *avg10 = AverageValue (n20, NPoints) / 2;
   *avg40 = AverageValue (n40, (int)(NPoints / 2 + 0.5));
   *delta10 = sqrt(Dispersion (0, NPoints - 1, n20) / (2 * NPoints));
   *delta40 = sqrt(Dispersion (0, (int)(NPoints / 2 + 0.5) - 1, n40) / (NPoints / 2));
   MinMax (n40, &min40, &max40, (int)(NPoints / 2 + 0.5));
   double* share40 = (double*) calloc (max40 - min40 + 1, sizeof(double));
-  ShareCount (n40, share40, min40, max40);
+  //ShareCount (NPoints, n40, share40, min40, max40);
   //Plot ();
 }
 
-void TwentyToFourty (int n20[], int n40[])
+void TwentyToFourty (int NPoints, int n20[], int n40[])
 {
   int i = 0;
   for (;;)
   {
+    if (i == (int)(NPoints / 2) * 2 - 2) break;
     n40[i / 2] = n20[i] + n20[i + 1];
-    if (i == NPoints - 2) break;
     i += 2;
   }
 }
@@ -105,7 +107,7 @@ double Dispersion (int Nstart, int Nfinish, int X[])
   return (sumdX / points);
 }
 
-void ShareCount (int n[], double share[], int min, int max)
+void ShareCount (int NPoints, int n[], double share[], int min, int max)
 {
   for (int i = 0; i <= max - min; i++)
   {
@@ -132,7 +134,7 @@ void Plot ()
 
 }
 
-int WriteData (double avg10, double avg40, double delta10, double delta40)
+int WriteData (int NPoints, double avg10, double avg40, double delta10, double delta40)
 {
   FILE* res = fopen ("result.txt", "w");
   if (!res) {printf ("Can't write to file \n"); return -1;}
