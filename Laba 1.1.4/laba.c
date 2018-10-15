@@ -6,12 +6,10 @@ const int NPoints = 200;
 
 int CheckDataZeros (int n20[]);
 int ReadData (int n20[]);
-<<<<<<< HEAD
 void CalculateData (int n20[]);
 void TwentyToFourty (int n20[], int n40[]);
-double AverageValue (int n[]);
-=======
->>>>>>> parent of 266e15c... calc = 20 to 40 + avg
+double AverageValue (int n[], int amnt);
+double Dispersion (int Nstart, int Nfinish, int X[]);
 
 int main ()
 {
@@ -21,6 +19,7 @@ int main ()
   if (RCheck != 0) return -1;
   DCheck = CheckDataZeros (n20);
   if (DCheck != 0) return -1;
+  CalculateData (n20);
   return 0;
 }
 
@@ -54,18 +53,19 @@ int CheckDataZeros (int n20[])
   }
   return 0;
 }
-<<<<<<< HEAD
 
 
 void CalculateData (int n20[])
 {
   int n40[NPoints / 2] = {};
-  double avgN10 = 0, avgN40 = 0;
+  double avgN10 = 0, avgN40 = 0, deltaMeas10 = 0, deltaMeas40 = 0;
   TwentyToFourty (n20, n40);
-  avgN10 = AverageValue (n20) / 2;
-  avgN40 = AverageValue (n40);
+  avgN10 = AverageValue (n20, NPoints) / 2;
+  avgN40 = AverageValue (n40, (int)(NPoints / 2 + 0.5));
+  deltaMeas10 = sqrt(Dispersion (0, NPoints - 1, n20) / 2);
+  deltaMeas40 = sqrt(Dispersion (0, (int)(NPoints / 2 + 0.5) - 1, n40));
 
-  printf(" %lg %lg\n",  avgN10, avgN40);
+  printf(" %lg %lg\n",  deltaMeas10, deltaMeas40);
 }
 
 void TwentyToFourty (int n20[], int n40[])
@@ -79,16 +79,21 @@ void TwentyToFourty (int n20[], int n40[])
   }
 }
 
-double AverageValue (int n[])
+double AverageValue (int n[], int amnt)
 {
   double avg = 0;
-  int ded[100];
-  printf(" %lu\n", sizeof(ded));
-  for (int i = 0; i <= sizeof(*n) / sizeof(int) - 1; i++)
+  for (int i = 0; i <= amnt - 1; i++)
   {
     avg = (avg * (double)i + n[i]) / (i + 1);
   }
   return avg;
 }
-=======
->>>>>>> parent of 266e15c... calc = 20 to 40 + avg
+
+double Dispersion (int Nstart, int Nfinish, int X[])
+{
+  double sumdX = 0, sumX = 0;
+  int points = Nfinish - Nstart + 1;
+  for (int i = Nstart; i <= Nfinish; i++) sumX  += X[i];
+  for (int i = Nstart; i <= Nfinish; i++) sumdX += (X[i] - (sumX / points)) * (X[i] - (sumX / points));
+  return (sumdX / points);
+}
