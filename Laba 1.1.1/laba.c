@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 
+const EPS = 0.0000000001, PI = 3.1415;
 const int  NPoints = 11, NWire = 3; // Number of points for each wire and number of wires
 const double D = 0.356, DeltaD = 0.002;  // Diameter in millimetres
 const double L[NWire] = {0.5, 0.3, 0.2}, DeltaL = 0.005; // Lenght in metres
@@ -55,7 +56,7 @@ int CheckDataZeros (double U[], double I[])
   double sumI = 0, sumU = 0;
   for (int i = 0; i <= NWire * NPoints - 1; i++) sumI += I[i];
   for (int i = 0; i <= NWire * NPoints - 1; i++) sumU += U[i];
-  if ((fabs(sumI) < 0.0000000001) || (fabs(sumI) < 0.0000000001))
+  if ((fabs(sumI) < EPS) || (fabs(sumI) < EPS))
   {
     printf("Check your input data\n");
     return -1;
@@ -71,7 +72,7 @@ void CalculateData (int n, double U[], double I[], double p[], double deltaP[], 
   dispU = Dispersion ((n * NPoints), (NPoints * (n + 1) - 1), U);
   R = cov / dispI;
   deltaR = sqrt((dispU / dispI - R * R) / (NPoints - 2));
-  p[n] = R * 3.1415 * D * D / (4 * L[n]);
+  p[n] = R * PI * D * D / (4 * L[n]);
   deltaP[n] = p[n] * sqrt((deltaR / R) * (deltaR / R) + (2 * DeltaD / D) * (2 * DeltaD / D) + (DeltaL / L[n]) * (DeltaL / L[n]));
   for (int i = 0; i <= NWire - 1; i++)
   {
@@ -105,9 +106,9 @@ int CheckData (double U[], double I[], double avgP)
   {
     for (int j = i * NPoints; j <= NPoints * (i + 1) - 1; j++)
     {
-      if ((I[j] > 0.0000000001) && (U[j] > 0.0000000001))
+      if ((I[j] > EPS) && (U[j] > EPS))
       {
-        if (fabs((U[j] / I[j]) * 3.1415 * D * D / (4 * L[i]) - avgP) > avgP * 0.25)
+        if (fabs((U[j] / I[j]) * PI * D * D / (4 * L[i]) - avgP) > avgP * 0.25)
         {
           printf("Check your input data \n");
           return -1;
