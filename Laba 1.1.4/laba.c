@@ -6,6 +6,9 @@ const int NPoints = 200;
 
 int CheckDataZeros (int n20[]);
 int ReadData (int n20[]);
+void CalculateData (int n20[]);
+void TwentyToFourty (int n20[], int n40[]);
+double AverageValue (int n[], int amnt);
 
 int main ()
 {
@@ -15,6 +18,7 @@ int main ()
   if (RCheck != 0) return -1;
   DCheck = CheckDataZeros (n20);
   if (DCheck != 0) return -1;
+  CalculateData (n20);
   return 0;
 }
 
@@ -47,4 +51,34 @@ int CheckDataZeros (int n20[])
     return -1;
   }
   return 0;
+}
+
+
+void CalculateData (int n20[])
+{
+  int n40[NPoints / 2] = {};
+  double avgN10 = 0;
+  TwentyToFourty (n20, n40);
+  avgN10 = AverageValue (n20, NPoints);
+}
+
+void TwentyToFourty (int n20[], int n40[])
+{
+  int i = 0;
+  for (;;)
+  {
+    n40[i / 2] = n20[i] + n20[i + 1];
+    if (i == NPoints - 2) break;
+    i += 2;
+  }
+}
+
+double AverageValue (int n[], int amnt)
+{
+  double avg = 0;
+  for (int i = 0; i <= amnt - 1; i++)
+  {
+    avg = (avg * (double)i + n[i]) / (i + 1);
+  }
+  return avg;
 }
