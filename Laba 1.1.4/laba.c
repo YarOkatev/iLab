@@ -8,7 +8,7 @@ int CheckDataZeros (int n20[]);
 int ReadData (int n20[]);
 void CalculateData (int n20[]);
 void TwentyToFourty (int n20[], int n40[]);
-double AverageValue (int n[], int amnt);
+double AverageValue (int n[]);
 
 int main ()
 {
@@ -57,9 +57,12 @@ int CheckDataZeros (int n20[])
 void CalculateData (int n20[])
 {
   int n40[NPoints / 2] = {};
-  double avgN10 = 0;
+  double avgN10 = 0, avgN40 = 0;
   TwentyToFourty (n20, n40);
-  avgN10 = AverageValue (n20, NPoints);
+  avgN10 = AverageValue (n20) / 2;
+  avgN40 = AverageValue (n40);
+
+  printf(" %lg %lg\n",  avgN10, avgN40);
 }
 
 void TwentyToFourty (int n20[], int n40[])
@@ -73,10 +76,12 @@ void TwentyToFourty (int n20[], int n40[])
   }
 }
 
-double AverageValue (int n[], int amnt)
+double AverageValue (int n[])
 {
   double avg = 0;
-  for (int i = 0; i <= amnt - 1; i++)
+  int ded[100];
+  printf(" %lu\n", sizeof(ded));
+  for (int i = 0; i <= sizeof(*n) / sizeof(int) - 1; i++)
   {
     avg = (avg * (double)i + n[i]) / (i + 1);
   }
