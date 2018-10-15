@@ -15,7 +15,7 @@ void ShareCount ();
 
 int main ()
 {
-  int n20[NPoints] = {};
+  int* n20 = (int*) calloc(NPoints, sizeof(int));
   int RCheck = -1, DCheck = -1, WCheck = -1;
   RCheck = ReadData (n20);
   if (RCheck != 0) return -1;
@@ -58,7 +58,7 @@ int CheckDataZeros (int n20[])
 
 void CalculateData (int n20[])
 {
-  int n40[NPoints / 2] = {}; /*  (int*) n40 = (int*)calloc(NPoints / 2, sizeof(int)); */
+  int* n40 = (int*) calloc (NPoints / 2, sizeof(int));
   double avgN10 = 0, avgN40 = 0, delta10 = 0, delta40 = 0;
   int min40 = 0, max40 = 0;
   TwentyToFourty (n20, n40);
@@ -67,7 +67,7 @@ void CalculateData (int n20[])
   delta10 = sqrt(Dispersion (0, NPoints - 1, n20) / (2 * NPoints));
   delta40 = sqrt(Dispersion (0, (int)(NPoints / 2 + 0.5) - 1, n40) / (NPoints / 2));
   MinMax (n40, &min40, &max40, (int)(NPoints / 2 + 0.5));
-  double share40[40] = {};
+  double* share40 = (double*) calloc (max40 - min40 + 1, sizeof(double));
   ShareCount (n40, share40, min40, max40);
 
   printf(" %d %d\n",  min40, max40);
