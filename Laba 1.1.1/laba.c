@@ -103,14 +103,13 @@ int CheckData (double U[], double I[], double avgP)
 {
   for (int i = 0; i <= NWire - 1; i++)
   {
-    double R = avgP * L[i] / (3.1415 * D * D / 4);
     for (int j = i * NPoints; j <= NPoints * (i + 1) - 1; j++)
     {
       if ((I[j] > 0.0000000001) && (U[j] > 0.0000000001))
       {
-        if (fabs(U[j] / I[j] - R) > R * 0.25)
+        if (fabs((U[j] / I[j]) * 3.1415 * D * D / (4 * L[i]) - avgP) > avgP * 0.25)
         {
-          printf("Check your input data for %d wire\n", i + 1);
+          printf("Check your input data \n");
           return -1;
         }
       }
