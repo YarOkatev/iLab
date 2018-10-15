@@ -6,9 +6,12 @@ const int NPoints = 200;
 
 int CheckDataZeros (int n20[]);
 int ReadData (int n20[]);
+<<<<<<< HEAD
 void CalculateData (int n20[]);
 void TwentyToFourty (int n20[], int n40[]);
 double AverageValue (int n[]);
+=======
+>>>>>>> parent of 266e15c... calc = 20 to 40 + avg
 
 int main ()
 {
@@ -18,7 +21,6 @@ int main ()
   if (RCheck != 0) return -1;
   DCheck = CheckDataZeros (n20);
   if (DCheck != 0) return -1;
-  CalculateData (n20);
   return 0;
 }
 
@@ -52,6 +54,7 @@ int CheckDataZeros (int n20[])
   }
   return 0;
 }
+<<<<<<< HEAD
 
 
 void CalculateData (int n20[])
@@ -87,3 +90,5 @@ double AverageValue (int n[])
   }
   return avg;
 }
+=======
+>>>>>>> parent of 266e15c... calc = 20 to 40 + avg
