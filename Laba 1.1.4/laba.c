@@ -10,6 +10,8 @@ void CalculateData (int n20[]);
 void TwentyToFourty (int n20[], int n40[]);
 double AverageValue (int n[], int amnt);
 double Dispersion (int Nstart, int Nfinish, int X[]);
+void MinMax (int n[], int* min, int* max, int amnt);
+void ShareCount ();
 
 int main ()
 {
@@ -54,18 +56,19 @@ int CheckDataZeros (int n20[])
   return 0;
 }
 
-
 void CalculateData (int n20[])
 {
   int n40[NPoints / 2] = {};
   double avgN10 = 0, avgN40 = 0, deltaMeas10 = 0, deltaMeas40 = 0;
+  int min40 = 0, max40 = 0;
   TwentyToFourty (n20, n40);
   avgN10 = AverageValue (n20, NPoints) / 2;
   avgN40 = AverageValue (n40, (int)(NPoints / 2 + 0.5));
   deltaMeas10 = sqrt(Dispersion (0, NPoints - 1, n20) / 2);
   deltaMeas40 = sqrt(Dispersion (0, (int)(NPoints / 2 + 0.5) - 1, n40));
+  MinMax (n40, &min40, &max40, (int)(NPoints / 2 + 0.5));
 
-  printf(" %lg %lg\n",  deltaMeas10, deltaMeas40);
+  printf(" %d %d\n",  min40, max40);
 }
 
 void TwentyToFourty (int n20[], int n40[])
@@ -96,4 +99,20 @@ double Dispersion (int Nstart, int Nfinish, int X[])
   for (int i = Nstart; i <= Nfinish; i++) sumX  += X[i];
   for (int i = Nstart; i <= Nfinish; i++) sumdX += (X[i] - (sumX / points)) * (X[i] - (sumX / points));
   return (sumdX / points);
+}
+
+void ShareCount ()
+{
+  //for (int i = 0; i < )
+}
+
+void MinMax (int n[], int* min, int* max, int amnt)
+{
+  *min = n[1];
+  *max = n[1];
+  for (int i = 0; i <= amnt - 1; i++)
+  {
+    if (n[i] < *min) *min = n[i];
+    if (n[i] > *max) *max = n[i];
+  }
 }
