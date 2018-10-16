@@ -31,6 +31,7 @@ int main ()
 
 int ReadData (int n20[])
 {
+  int arrSize = DefaultNP;
   FILE* file = fopen ("input.in", "r");
   if (!file) {printf ("Can't open file \n"); return -1;}
   int point = 0;
@@ -38,10 +39,14 @@ int ReadData (int n20[])
   {
     if (fscanf (file, "%d", &n20[point]) == EOF) break;
     point++;
-    if (point > DefaultNP - 1) n20 = (int*) realloc(n20, (point + 100) * sizeof(int));
+    if (point > arrSize - 1)
+    {
+      n20 = (int*) realloc(n20, (point + 100) * sizeof(int));
+      arrSize = point + 100;
+    }
   }
   fclose (file);
-  n20 = (int*) realloc(n20, (point + 1) * sizeof(int));
+  n20 = (int*) realloc(n20, (point) * sizeof(int));
   if (point <= 10)
   {
     printf("Number of measurements is incorrect\n");
