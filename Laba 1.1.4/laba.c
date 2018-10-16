@@ -2,7 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const int DefaultNP = 205;
+const int DefaultNP = 1;
 
 int CheckDataZeros ();
 int ReadData ();
@@ -20,6 +20,7 @@ int main ()
   int* n20 = (int*) calloc(DefaultNP, sizeof(int));
   int NPoints = 0, DCheck = -1, WCheck = -1;
   NPoints = ReadData (n20);
+  printf("%d\n", NPoints);
   if (NPoints <= 0) return -1;
   DCheck = CheckDataZeros (NPoints, n20);
   if (DCheck != 0) return -1;
@@ -41,8 +42,8 @@ int ReadData (int n20[])
     point++;
     if (point > arrSize - 1)
     {
-      n20 = (int*) realloc(n20, (point + 100) * sizeof(int));
-      arrSize = point + 100;
+      n20 = (int*) realloc(n20, (point + 101) * sizeof(int));
+      arrSize = point + 101;
     }
   }
   fclose (file);
@@ -52,6 +53,12 @@ int ReadData (int n20[])
     printf("Number of measurements is incorrect\n");
     return -1;
   }
+//
+  for (int i = 0; i <= point + 10; i++)
+  {
+    printf("n20 = %d %d\n",i, n20[i] );
+  }
+//
   return point;
 }
 
@@ -69,9 +76,9 @@ int CheckDataZeros (int NPoints, int n20[])
 
 void CalculateData (int NPoints, int n20[], double* avg10, double* avg40, double* delta10, double* delta40)
 {
-  int* n40 = (int*)calloc((int)(NPoints / 2), sizeof(int));
+  int* n40 = (int*)calloc((int)(NPoints / 2) + 1, sizeof(int));
   int min40 = 0, max40 = 0;
-  TwentyToFourty (NPoints, n20, n40);
+  TwentyToFourty (NPoints, &n20, &n40);
   *avg10 = AverageValue (n20, NPoints) / 2;
   *avg40 = AverageValue (n40, (int)(NPoints / 2));
   *delta10 = sqrt(Dispersion(0, NPoints - 1, n20) / (2 * NPoints));
@@ -82,15 +89,16 @@ void CalculateData (int NPoints, int n20[], double* avg10, double* avg40, double
   //Plot ();
 }
 
-void TwentyToFourty (int NPoints, int n20[], int n40[])
+void TwentyToFourty (int NPoints, int n20[], int* n40[])
 {
   int i = 0;
   for (;;)
   {
-    if (i >= NPoints) break;
-    n40[i / 2] = n20[i] + n20[i + 1];
+    if (i >= NPoints - 1) break;
+    *n40[i / 2] = n20[i] + n20[i + 1];
     i += 2;
   }
+  
 }
 
 double AverageValue (int n[], int amnt)
@@ -131,7 +139,9 @@ void MinMax (int n[], int* min, int* max, int amnt)
   {
     if (n[i] < *min) *min = n[i];
     if (n[i] > *max) *max = n[i];
+    printf("i = %d n = %d\n", i, n[i]);
   }
+  printf("%d %d\n", *min, *max);
 }
 
 void Plot ()
