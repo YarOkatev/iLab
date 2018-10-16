@@ -2,7 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const int DefaultNP = 205;
+const int DefaultNP = 220;
 
 int CheckDataZeros ();
 int ReadData ();
