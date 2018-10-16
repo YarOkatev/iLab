@@ -43,6 +43,7 @@ int ReadData (int n20[])
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 6c23918391b2b7965a576e4a485c972c0d3bc830
     if (point > arrSize - 1)
@@ -59,6 +60,9 @@ int ReadData (int n20[])
 >>>>>>> parent of 7dc507f... fix realloc
 =======
 >>>>>>> 6c23918391b2b7965a576e4a485c972c0d3bc830
+=======
+    if (point > DefaultNP - 1) n20 = (int*) realloc(n20, (point + 100) * sizeof(int));
+>>>>>>> parent of 7dc507f... fix realloc
 =======
     if (point > DefaultNP - 1) n20 = (int*) realloc(n20, (point + 100) * sizeof(int));
 >>>>>>> parent of 7dc507f... fix realloc
