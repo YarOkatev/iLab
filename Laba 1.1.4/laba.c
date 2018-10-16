@@ -2,7 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const int DefaultNP = 200;
+const int DefaultNP = 205;
 
 int CheckDataZeros ();
 int ReadData ();
@@ -64,16 +64,16 @@ int CheckDataZeros (int NPoints, int n20[])
 
 void CalculateData (int NPoints, int n20[], double* avg10, double* avg40, double* delta10, double* delta40)
 {
-  int* n40 = (int*) calloc ((int)(NPoints / 2 + 0.5), sizeof(int));
+  int* n40 = (int*)calloc((int)(NPoints / 2), sizeof(int));
   int min40 = 0, max40 = 0;
   TwentyToFourty (NPoints, n20, n40);
   *avg10 = AverageValue (n20, NPoints) / 2;
-  *avg40 = AverageValue (n40, (int)(NPoints / 2 + 0.5));
-  *delta10 = sqrt(Dispersion (0, NPoints - 1, n20) / (2 * NPoints));
-  *delta40 = sqrt(Dispersion (0, (int)(NPoints / 2 + 0.5) - 1, n40) / (NPoints / 2));
-  MinMax (n40, &min40, &max40, (int)(NPoints / 2 + 0.5));
-  double* share40 = (double*) calloc (max40 - min40 + 1, sizeof(double));
-  //ShareCount (NPoints, n40, share40, min40, max40);
+  *avg40 = AverageValue (n40, (int)(NPoints / 2));
+  *delta10 = sqrt(Dispersion(0, NPoints - 1, n20) / (2 * NPoints));
+  *delta40 = sqrt(Dispersion(0, (int)(NPoints / 2) - 1, n40) / (NPoints / 2));
+  MinMax (n40, &min40, &max40, (int)(NPoints / 2));
+  double* share40 = (double*)calloc(max40 - min40 + 1, sizeof(double));
+  ShareCount (NPoints, n40, share40, min40, max40);
   //Plot ();
 }
 
@@ -82,7 +82,7 @@ void TwentyToFourty (int NPoints, int n20[], int n40[])
   int i = 0;
   for (;;)
   {
-    if (i == (int)(NPoints / 2) * 2 - 2) break;
+    if (i >= NPoints) break;
     n40[i / 2] = n20[i] + n20[i + 1];
     i += 2;
   }
@@ -111,7 +111,7 @@ void ShareCount (int NPoints, int n[], double share[], int min, int max)
 {
   for (int i = 0; i <= max - min; i++)
   {
-    for (int j = 0; j <= NPoints / 2 - 1; j++)
+    for (int j = 0; j <= (int)(NPoints / 2) - 1; j++)
     {
       if (n[j] == i + min) share[i] += (double) 1 / (NPoints / 2);
     }
@@ -120,8 +120,8 @@ void ShareCount (int NPoints, int n[], double share[], int min, int max)
 
 void MinMax (int n[], int* min, int* max, int amnt)
 {
-  *min = n[1];
-  *max = n[1];
+  *min = n[0];
+  *max = n[0];
   for (int i = 0; i <= amnt - 1; i++)
   {
     if (n[i] < *min) *min = n[i];
