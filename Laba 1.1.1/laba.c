@@ -2,7 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const EPS = 0.0000000001, PI = 3.1415;
+const double EPS = 0.0000000001, PI = 3.1415;
 const int  NPoints = 11, NWire = 3; // Number of points for each wire and number of wires
 const double D = 0.356, DeltaD = 0.002;  // Diameter in millimetres
 const double L[NWire] = {0.5, 0.3, 0.2}, DeltaL = 0.005; // Lenght in metres
