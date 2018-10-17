@@ -1,0 +1,23 @@
+char* text [N_STRING] = {};
+for (int i = 0; i < N_STRING; i++)
+{
+  text[i] =  &buf[i];  // передача адреса элемента // <=> text[i] = buf + i
+}
+
+buf[3] = *(buf + 3) = *(3 + buf) = 3[buf] // значение элемента по адресу
+
+
+void swap (char* *s1, char* *s2)
+{
+  char* tmp = ..;
+  tmp = *s1;
+  *s1 = *s2;
+  *s2 = tmp;
+}
+
+struct stat st = {};
+stat ("poem.txt", &st);
+st.st_size // размер файла
+
+char* buf = (char*) calloc (st.st_size, sizeof(char));
+char** text = (char* *) calloc (st.st_size, sizeof(char));
