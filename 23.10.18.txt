@@ -1,0 +1,36 @@
+// указатели  на функцию
+
+int BinOp (int a, int b, int (*op) (int a, int b))
+{
+  ...
+  return op (a, b);
+}
+
+
+int main ()
+{
+  int (*bin_op) (int a, int b);
+  bin_op = plus;
+  int res = bin_op (3, 4);
+  bin_op = minus;
+  res = bin_op (3, 4);
+}
+
+int plus (int a, int b)
+{
+  return a + b;
+}
+
+//
+
+struct stroka
+{
+  char* str;
+  int len;
+}
+
+// fread
+
+fread (void* ptr, int size, int count, FILE* stream);
+
+size = sizeof (char)
