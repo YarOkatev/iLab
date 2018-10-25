@@ -16,11 +16,11 @@ int main ()
 {
   int nSymb = 0;
   StringPlus* text = NULL;
-  char* fcontent = (char*) calloc (1000, sizeof(char));
+  char* fcontent = NULL;
   //int RCheck = -1;
   FILE* poem;
 
-  FileCount (poem, &nSymb);
+  //FileCount (poem, &nSymb);
 
   FileRead (poem, fcontent, &nSymb);
   printf("\n second %d \n%s\n", nSymb, fcontent);
@@ -28,7 +28,7 @@ int main ()
   return 0;
 }
 
-int FileRead (FILE* poem, char* fcontent, int* nSymb)
+int FileRead (FILE* poem, char fcontent, int* nSymb)
 {
   /* FILE* poem = fopen ("poem.txt", "r"); // file in win (1251) or cp866
   if (!poem)
