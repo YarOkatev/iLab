@@ -20,12 +20,15 @@ int main ()
   int* n20 = (int*) calloc(DefaultNP, sizeof(int));
   int NPoints = 0, DCheck = -1, WCheck = -1;
   NPoints = ReadData (n20);
-  if (NPoints <= 0) return -1;
+  if (NPoints <= 0)
+    return -1;
   DCheck = CheckDataZeros (NPoints, n20);
-  if (DCheck != 0) return -1;
+  if (DCheck != 0)
+    return -1;
   CalculateData (NPoints, n20, &avg10, &avg40, &delta10, &delta40);
   WCheck = WriteData (NPoints, avg10, avg40, delta10, delta40);
-  if (WCheck != 0) return -1;
+  if (WCheck != 0) 
+    return -1;
   return 0;
 }
 
@@ -33,11 +36,16 @@ int ReadData (int n20[])
 {
   int arrSize = DefaultNP;
   FILE* file = fopen ("input.in", "r");
-  if (!file) {printf ("Can't open file \n"); return -1;}
+  if (!file)
+  {
+    printf ("Can't open file \n");
+    return -1;
+  }
   int point = 0;
   for (;;)
   {
-    if (fscanf (file, "%d", &n20[point]) == EOF) break;
+    if (fscanf (file, "%d", &n20[point]) == EOF)
+      break;
     point++;
     if (point > arrSize - 1)
     {
