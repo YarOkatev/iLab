@@ -2,51 +2,66 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 
-typedef struct StrP
-{
-  char** str;
-  int len;
-} StringPlus;
+const int DefSN = 1000;
 
-int FileRead ();
-int FileInfo ();
+typedef struct StringPlus
+{
+  char* str;
+  int len;
+} StrP;
+
+char* FileRead ();
+StrP* BetterData ();
 
 int main ()
 {
-  FILE* filepoem = fopen ("poem.txt", "r");
   int nSymb = 0;
-  //int RCheck = -1;
-  FileInfo (filepoem, &nSymb);
-  char* poem = (char*) calloc (nSymb + 1, sizeof(char));
-  FileRead (filepoem, poem, nSymb);
+  char* poem = NULL;
+  StrP* text = NULL;
+  poem = FileRead (&nSymb);
+  text = BetterData (poem, nSymb);
   
-  fclose (filepoem);
-  printf("+++++++++++++++++++++++++%s\n", poem);
+  for (int i = 0; i <= 15; i++)
+  {
+    printf("%d= %s\n",text[i].len, text[i].str);
+  }
   return 0;
 }
 
-int FileInfo (FILE* filepoem, int* nSymb)
+char* FileRead (int* nSymb)
 {
+  FILE* filepoem = fopen ("poem.txt", "r");
   if (!filepoem)
   {
     printf ("Can't open file \n");
-    return -1;
+    fclose (filepoem);
+    return NULL;
   }
   struct stat st = {};
   stat ("poem.txt", &st);
   *nSymb = (int) st.st_size;
-  return 0;
+  char* poem = (char*) calloc (*nSymb + 1, sizeof(char));
+  fread (poem, sizeof(char), *nSymb, filepoem);
+  fclose (filepoem);
+  return poem;
 }
 
-int FileRead (FILE* filepoem, char* poem, int nSymb)
+StrP* BetterData (char* poem, int nSymb)
 {
-  if (!filepoem)
+  StrP* text = (StrP*) calloc (DefSN, sizeof(StrP));
+  int k = 0;
+  text[k].str = poem;
+  char* prev = poem - 1;
+  for (int i = 0; i < nSymb; i++)
   {
-    printf ("Can't open file \n");
-    return -1;
+    if (poem[i] == '\n')
+    {
+      text[k].len = poem + i - prev;
+      k++;
+      poem[i] = '\0';
+      text[k].str = poem + i + 1;
+      prev = poem + i;
+    }
   }
-  fread (poem, sizeof(char), nSymb, filepoem);
-  poem[nSymb] = '\0';
-  printf("%s\n", poem);
-  return 0;
+  return text;
 }
