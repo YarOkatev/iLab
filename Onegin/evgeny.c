@@ -14,7 +14,8 @@ char* FileRead ();
 StrPlus* BetterData ();
 void Sorting ();
 int FileWrite ();
-int comp (const StrPlus *, const StrPlus *);
+void Convert ();
+int comp ();
 
 int main ()
 {
@@ -60,7 +61,6 @@ StrPlus* BetterData (char* poem, int nSymb, int* nStrings)
     {
       text[k].len = poem + i - prev;
       k++;
-      //poem[i] = '\0';
       text[k].str = poem + i + 1;
       prev = poem + i;
     }
@@ -79,11 +79,6 @@ void Sorting (StrPlus* text, int nStrings)
 {
   qsort (text, nStrings, sizeof(StrPlus), (int(*) (const void *, const void *)) comp);
 }
-
-// void SortingEnd (StringPlus* text, int nStrings)
-// {
-//   qsort (text, nStrings, sizeof(StrPlus), (int(*) (const void *, const void *)) comp2);
-// }
 
 int FileWrite (StrPlus* text, int nStrings)
 {
@@ -105,58 +100,41 @@ int comp (const StrPlus* line1, const StrPlus* line2)
 {
   int j = 0, i = 0;
   char s1 = 0, s2 = 0;
-  printf("\n");
-  if (line1->str[0] == '\n')
-    return 1;
-  if (line2->str[0] == '\n')
-    return -1;
-  for (;;)
+  for (; i < line1->len && j < line2->len;)
   {
-    //printf("* %c %c *     ", line1->str[i], line2->str[j]);
-    if ((line1->str[i] <= 64) || (line1->str[i] >= 123) ||
-                    ((line1->str[i] >= 91) && (line1->str[i] <= 96)))
+    s1 = line1->str[i];
+    s2 = line2->str[j];
+    Convert (&s1, &s2);
+    if (s1 == -1)
     {
       i++;
-      if (i == line1->len)
-        break;
       continue;
     }
-    if ((line2->str[j] <= 64) || (line2->str[j] >= 123) ||
-                    ((line2->str[j] >= 91) && (line2->str[j] <= 96)))
+    if (s2 == -1)
     {
       j++;
-      if (j == line2->len)
-        break;
       continue;
     }
-    s1 = (line1->str[i] <= 90) ? (line1->str[i] + 32) : line1->str[i];
-    s2 = (line2->str[j] <= 90) ? (line2->str[j] + 32) : line2->str[j];
-    //printf("| %c %c |\n", s1, s2);
     if (s1 > s2)
       return 1;
     if (s2 > s1)
       return -1;
     j++;
     i++;
-    if (j == line2->len)
-      break;
-    if (j == line1->len)
-      break;
   }
-  // printf("| %c %c |\n", s1, s2);
-  // if (s2 == 0 && s1 == 0)
-  //   return 1;
-  // if (s1 == 0 && s2 != 0)
-  //   return -1;
+  if (s1 == -1 && s2 != -1)
+    return 1;
+  if (s2 == -1 && s1 != -1)
+    return -1;
   return 0;
 }
 
-// int comp2 (const StrPlus* line1, const StrPlus* line2)
-// {
-//   int j = 0, i = 0, cmp = 0;
-//   char s1 = 0, s2 = 0;
-//   if (line1->str[0] == '\n')
-//     return 1;
-//   if (line2->str[0] == '\n')
-//     return -1;
-// }
+void Convert (char* s1, char* s2)
+{
+  if ((*s1 <= 64) || (*s1 >= 123) || ((*s1 >= 91) && (*s1 <= 96)))
+    *s1 = -1;
+  if ((*s2 <= 64) || (*s2 >= 123) || ((*s2 >= 91) && (*s2 <= 96)))
+    *s2 = -1;
+  *s1 = (*s1 <= 90 && *s1 >= 65) ? (*s1 + 32) : *s1;
+  *s2 = (*s2 <= 90 && *s2 >= 65) ? (*s2 + 32) : *s2;
+}

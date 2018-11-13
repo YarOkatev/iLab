@@ -37,9 +37,9 @@ After the thing it loves.
 against their own succession.
 Against the which a moiety competent
 against the which he has impon'd, as I take it, six French
-again.
 Against thy mother aught. Leave her to heaven,
 Against yourself. I know you are no truant.
+again.
 A Gentleman, courtier.
 A heart unfortified, a mind impatient,
 Ah, mine own lord, what have I seen to-night!
@@ -821,7 +821,6 @@ Eats not the flats with more impetuous haste
 Else could you not have motion; but sure that sense
 Elsinore. A churchyard.
 Elsinore. A hall in the Castle.
-Elsinore.
 Elsinore. Another room in the Castle.
 Elsinore. Another room in the Castle.
 Elsinore. A passage in the Castle.
@@ -832,13 +831,14 @@ Elsinore. A room in the Castle.
 Elsinore. A room in the Castle.
 Elsinore. A room in the Castle.
 Elsinore. A room in the house of Polonius.
+Elsinore.
 Elsinore. A room in the house of Polonius.
 Elsinore. A room of state in the Castle.
 Elsinore. hall in the Castle.
 Elsinore. The Castle. Another part of the fortifications.
 Elsinore. The platform before the Castle.
-end.
 end his part in peace; the clown shall make those laugh whose
+end.
 English Ambassadors.
 enough, and likelihood to lead it; as thus: Alexander died,
 Enquire me first what Danskers are in Paris;
@@ -849,53 +849,53 @@ Enter a Messenger.
 Enter Fortinbras and English Ambassadors, with Drum,
 Enter Fortinbras with his Army over the stage.
 Enter four or five Players.
-Enter Ghost again.
 Enter Ghost and Hamlet.
 Enter Ghost.
+Enter Ghost again.
 Enter Ghost.
 Enter Hamlet and Guildenstern [with Attendants].
 Enter Hamlet and Horatio afar off.
-Enter Hamlet.
-Enter Hamlet.
-Enter Hamlet.
 Enter Hamlet and Horatio.
-Enter Hamlet.
 Enter Hamlet and three of the Players.
 Enter Hamlet, Horatio, and Marcellus.
 Enter Hamlet, reading on a book.
+Enter Hamlet.
+Enter Hamlet.
+Enter Hamlet.
+Enter Hamlet.
 Enter Hamlet, Rosencrantz, [Guildenstern,] and others.
 Enter Horatio and Marcellus.
-Enter Horatio and Marcellus.
 Enter Horatio.
+Enter Horatio and Marcellus.
 Enter Horatio, Marcellus, and Bernardo.
 Enter Horatio, Queen, and a Gentleman.
 Enter Horatio with an Attendant.
 Enter King and Laertes.
 Enter King and Polonius.
 Enter King and Queen, with Rosencrantz and Guildenstern.
-Enter King.
-Enter King.
 Enter King, Queen, Laertes, Osric, and Lords, with other
 Enter King, Queen, Polonius, Ophelia, Rosencrantz, Guildenstern, and Lords.
+Enter King.
+Enter King.
 Enter King, Rosencrantz, and Guildenstern.
 Enter Laertes and Ophelia.
 Enter Laertes with others.
 Enter Lucianus.
-Enter Ophelia.
 Enter Ophelia distracted.
 Enter Ophelia.
+Enter Ophelia.
 Enter Polonius and Reynaldo.
-Enter Polonius.
-Enter Polonius.
-Enter Polonius.
-Enter Polonius.
-Enter Polonius.
 Enter Polonius, Rosencrantz, and Guildenstern.
 Enter Polonius, Voltemand, and Cornelius.
+Enter Polonius.
+Enter Polonius.
+Enter Polonius.
+Enter Polonius.
+Enter Polonius.
 Enter [priests with] a coffin [in funeral procession], King,
 Enter Prologue.
-Enter Queen and Polonius.
 Enter Queen.
+Enter Queen and Polonius.
 Enter Rosencrantz and Guildenstern.
 Enter Rosencrantz and Guildenstern.
 Enter Rosencrantz and Guildenstern.
@@ -928,14 +928,6 @@ excellent voice, in this little organ, yet cannot you make it
 Exchange forgiveness with me, noble Hamlet.
 Excitements of my reason and my blood,
 Exeunt all but Hamlet and Horatio.
-[Exeunt all but Hamlet.]
-Exeunt [all but Hamlet].
-[Exeunt all but Hamlet.]
-Exeunt [all but the Captain].
-[Exeunt Attendants.]
-Exeunt Gentlemen.
-Exeunt Ghost and Hamlet.
-Exeunt King and Polonius].
 Exeunt.
 Exeunt.
 Exeunt
@@ -944,18 +936,26 @@ Exeunt.
 Exeunt.
 Exeunt.
 Exeunt.
+Exeunt [all but Hamlet].
+[Exeunt all but Hamlet.]
+[Exeunt all but Hamlet.]
 Exeunt.
 Exeunt.
+Exeunt [all but the Captain].
+[Exeunt Attendants.]
+Exeunt Gentlemen.
+Exeunt Ghost and Hamlet.
+Exeunt King and Polonius].
 Exeunt King and Queen, [with Attendants].
 Exeunt marching; after the which a peal of ordnance
 Exeunt Players.
 Exeunt Polonius and Players [except the First].
-Exeunt [Rosencrantz and Guildenstern].
+Exeunt Rosencrantz and Guildenstern, [with some
 Exeunt Rosencrantz and Guildenstern.
 [Exeunt Rosencrantz and Guildenstern.]
-Exeunt Rosencrantz and Guildenstern, [with some
 Exeunt Rosencrantz and Guildenstern]
 [Exeunt Rosencrantz and Guildenstern
+Exeunt [Rosencrantz and Guildenstern].
 Exeunt Voltemand and Cornelius.
 [Exit Attendant.]
 [Exit First Player.]
@@ -963,8 +963,8 @@ Exeunt Voltemand and Cornelius.
 Exit Ghost.
 Exit Ghost.
 Exit Ghost.
-[Exit Horatio.]
 Exit Horatio.
+[Exit Horatio.]
 [Exit Lord.]
 Exit Messenger.
 Exit [Polonius].
@@ -986,14 +986,14 @@ Eyes without feeling, feeling without sight,
 faculties! in form and moving how express and admirable! in
 Fall'n on th' inventors' heads. All this can I
 Fall ten times treble on that cursed head
-Farewell.
-Farewell. My blessing season this in thee!
-Farewell, dear mother.
 Farewell, and let your haste commend your duty.
+Farewell, dear mother.
+Farewell. My blessing season this in thee!
+Farewell.
 Fare you well, my dove!
 father?
-favours?
 favour she must come. Make her laugh at that. Prithee, Horatio,
+favours?
 fay, I cannot reason.
 Fear it, Ophelia, fear it, my dear sister,
 feather. I have of late- but wherefore I know not- lost all my
@@ -1555,8 +1555,8 @@ Ham. What woman then?
 Ham. What?
 Ham. Whither wilt thou lead me? Speak! I'll go no further.
 Ham. Who commands them, sir?
-Ham. Who, I?
 Ham. Who is to be buried in't?
+Ham. Who, I?
 Ham. Whose was it?
 Ham. Why, anything- but to th' purpose. You were sent for; and
 Ham. Why did you laugh then, when I said 'Man delights not me'?
@@ -1713,8 +1713,8 @@ Horatio, friend to Hamlet.
 Horatio!- or I do forget myself.
 Hor. A truant disposition, good my lord.
 Hor. Ay, good my lord.
-Hor. Ay, my lord.
 Hor. Ay, my lord, And of calveskins too.
+Hor. Ay, my lord.
 Hor. Before my God, I might not this believe
 Hor. Be rul'd. You shall not go.
 Hor. Custom hath made it in him a Property of easiness.
@@ -2200,8 +2200,8 @@ Laer. My lord, I'll hit him now.
 Laer. My lord, I will be rul'd;
 Laer. My necessaries are embark'd. Farewell.
 Laer. My will, not all the world!
-Laer. No.
 Laer. None but his enemies.
+Laer. No.
 Laer. O, fear me not!
 Laer. O, treble woe
 Laer. Say you so? Come on.                               Play.
@@ -2338,8 +2338,8 @@ Mar. My good lord!
 Mar. My lord, upon the platform where we watch'd.
 Mar. Nay, let's follow him.
 Mar. No, it is struck.
-Mar. Nor I, my lord.
 Mar. Nor I, my lord- in faith.
+Mar. Nor I, my lord.
 Mar. O, farewell, honest soldier.
 Mar. O, wonderful!
 Mar. Peace! break thee off! Look where it comes again!
@@ -2377,8 +2377,8 @@ might it not?
 Might stop a hole to keep the wind away.
 Millions of acres on us, till our ground,
 mind.
-mine.
 Mine and my father's death come not upon thee,
+mine.
 mirth, forgone all custom of exercises; and indeed, it goes so
 monsters you make of them. To a nunnery, go; and quickly too.
 More grief to hide than hate to utter love.
@@ -2584,8 +2584,8 @@ On Mars's armour, forg'd for proof eterne,
 on, only got the tune of the time and outward habit of encounter-
 On plots and errors happen.
 On such regards of safety and allowance
-on't.
 on the way, and hither are they coming to offer you service.
+on't.
 On wholesome life usurp immediately.
 Oph. And hath given countenance to his speech, my lord,
 Oph. At home, my lord.
@@ -2841,8 +2841,8 @@ Pol. My lord, the Queen would speak with you, and presently.
 Pol. Not I, my lord.
 Pol. Observe his inclination in yourself.
 [Polonius hides behind the arras.]
-Polonius, Laertes and his sister Ophelia, [Voltemand, Cornelius,]
 Polonius.
+Polonius, Laertes and his sister Ophelia, [Voltemand, Cornelius,]
 Polonius, Lord Chamberlain.
 Pol. Ophelia, walk you here.- Gracious, so please you,
 Pol. [points to his head and shoulder] Take this from this, if this
@@ -2895,8 +2895,8 @@ put another question to thee. If thou answerest me not to the
 [Puts down the skull.]
 Put your dread pleasures more into command
 Pyrrhus at Priam drives, in rage strikes wide;
-Queen. Alack,
 Queen. Alack, what noise is this?
+Queen. Alack,
 Queen. Alas, he's mad!
 Queen. Alas, how is't with you,
 Queen. Alas, look here, my lord!
@@ -2978,9 +2978,9 @@ Rankly abus'd. But know, thou noble youth,
 rapiers and poniards, with their assigns, as girdle, hangers, and
 rawer breath
 read, my lord?
-[Reads.]
-[Reads] the letter.
 [Reads]'High and Mighty,-You shall know I am set naked on your
+[Reads] the letter.
+[Reads.]
 reason and sanity could not so prosperously be delivered of. I
 Rebellious to his arm, lies where it falls,
 Receiv'd his love?
@@ -3029,8 +3029,8 @@ Rosencrantz, courtier.
 Rosencrantz! Good lads, how do ye both?
 Ros. Even those you were wont to take such delight in, the
 Ros. Faith, there has been much to do on both sides; and the nation
-Ros. Good my lord!
 Ros. Good my lord, what is your cause of distemper? You do surely
+Ros. Good my lord!
 Ros. Happily he's the second time come to them; for they say an old
 Ros. He does confess he feels himself distracted,
 Ros. Ho, Guildenstern! Bring in my lord.
@@ -3078,11 +3078,11 @@ Say, why is this? wherefore? What should we do?
 scarcely lie in this box; and must th' inheritor himself have no
 [Scatters flowers.]
 SCENE.- Elsinore.
+Scene III.
+Scene III.
+Scene III.
 Scene II.
-Scene III.
-Scene III.
 Scene II.
-Scene III.
 Scene II.
 Scene II.
 Scene II.
