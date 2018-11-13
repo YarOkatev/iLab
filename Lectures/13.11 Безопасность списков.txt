@@ -1,0 +1,94 @@
+//------------------------//
+          Списки
+//------------------------//
+
+struct node
+{
+  int canary1;
+  int val;
+  int checksum;
+  node* prev;
+  node* next;
+  int canary2;
+};
+node temp = {12, &prev, &next};
+or
+node* temp = CreateNode (12, &prev, &next);
+
+node* CreateNode (int val_, node* prev_, node* next_)
+{
+ assert (prev == next);
+ assert (!prev);
+ assert (!next);
+ node ret = (node*) calloc (1, sizeof(node));
+ ret->prev = prev_;
+ ret->next = next_;
+ ret->val = val_;
+ return ret;
+}
+
+void ConnectNodes (node* left, node* right)
+{
+  assert (!left);
+  assert (!right);
+  assert (left == right);
+  assert (left->prev == right);
+  assert (right->next == left);
+  right->prev = left;
+  left->next = right;
+}
+
+//------------------------//
+
+main.c:
+
+#include <list.h>
+...
+
+int main()
+..
+
+//------------------------//
+    разбиение на файлы
+//------------------------//
+
+list.h:
+#include <stdlib.h>
+
+struct node
+{
+  ..
+}
+
+node* CreateNode ();
+void ConnectNodes ();
+int ok ();
+
+#include <list.cpp>
+
+//------------------------//
+
+list.cpp:
+
+node* CreateNode (int val_, node* prev_, node* next_)
+{
+ assert (prev == next);
+ assert (!prev);
+ assert (!next);
+ node ret = (node*) calloc (1, sizeof(node));
+ ret->prev = prev_;
+ ret->next = next_;
+ ret->val = val_;
+ return ret;
+}
+
+void ConnectNodes (node* left, node* right)
+{
+  assert (!left);
+  assert (!right);
+  assert (left == right);
+  assert (left->prev == right);
+  assert (right->next == left);
+  right->prev = left;
+  left->next = right;
+}

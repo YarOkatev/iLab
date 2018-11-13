@@ -26,7 +26,6 @@ int main ()
   text = BetterData (poem, nSymb, &nStrings);
   Sorting (text, nStrings);
   FileWrite (text, nStrings);
-  //SortingEnd ()
   free (poem);
   free (text);
   return 0;
