@@ -24,7 +24,8 @@ int main ()
   poem = FileRead (&nSymb);
   text = BetterData (poem, nSymb, &nStrings);
   Sorting (text, nStrings);
-  FileWrite (text, poem, nStrings);
+  FileWrite (text, nStrings);
+  //SortingEnd ()
   free (poem);
   free (text);
   return 0;
@@ -79,7 +80,12 @@ void Sorting (StrPlus* text, int nStrings)
   qsort (text, nStrings, sizeof(StrPlus), (int(*) (const void *, const void *)) comp);
 }
 
-int FileWrite (StrPlus* text, char* poem, int nStrings)
+// void SortingEnd (StringPlus* text, int nStrings)
+// {
+//   qsort (text, nStrings, sizeof(StrPlus), (int(*) (const void *, const void *)) comp2);
+// }
+
+int FileWrite (StrPlus* text, int nStrings)
 {
   FILE* output = fopen ("out.txt", "w");
   if (!output)
@@ -97,36 +103,39 @@ int FileWrite (StrPlus* text, char* poem, int nStrings)
 
 int comp (const StrPlus* line1, const StrPlus* line2)
 {
-  int j = 0, i = 0, cmp = 0;
+  int j = 0, i = 0;
   char s1 = 0, s2 = 0;
+  printf("\n");
   if (line1->str[0] == '\n')
     return 1;
   if (line2->str[0] == '\n')
     return -1;
   for (;;)
   {
-    if (((int) line1->str[i] <= 64) || ((int) line1->str[i] >= 123) ||
-                    (((int) line1->str[i] >= 91) && ((int) line1->str[i] <= 96)))
-      { i++; continue; }
-    if (((int) line2->str[j] <= 64) || ((int) line2->str[j] >= 123) ||
-                    (((int) line2->str[j] >= 91) && ((int) line2->str[j] <= 96)))
-      { j++; continue; }
-    if (j == line2->len)
-      break;
-    if (j == line1->len)
-      break;
+    //printf("* %c %c *     ", line1->str[i], line2->str[j]);
+    if ((line1->str[i] <= 64) || (line1->str[i] >= 123) ||
+                    ((line1->str[i] >= 91) && (line1->str[i] <= 96)))
+    {
+      i++;
+      if (i == line1->len)
+        break;
+      continue;
+    }
+    if ((line2->str[j] <= 64) || (line2->str[j] >= 123) ||
+                    ((line2->str[j] >= 91) && (line2->str[j] <= 96)))
+    {
+      j++;
+      if (j == line2->len)
+        break;
+      continue;
+    }
     s1 = (line1->str[i] <= 90) ? (line1->str[i] + 32) : line1->str[i];
     s2 = (line2->str[j] <= 90) ? (line2->str[j] + 32) : line2->str[j];
+    //printf("| %c %c |\n", s1, s2);
     if (s1 > s2)
-    {
-      cmp = 1;
-      break;
-    }
+      return 1;
     if (s2 > s1)
-    {
-      cmp = -1;
-      break;
-    }
+      return -1;
     j++;
     i++;
     if (j == line2->len)
@@ -134,5 +143,20 @@ int comp (const StrPlus* line1, const StrPlus* line2)
     if (j == line1->len)
       break;
   }
-  return cmp;
+  // printf("| %c %c |\n", s1, s2);
+  // if (s2 == 0 && s1 == 0)
+  //   return 1;
+  // if (s1 == 0 && s2 != 0)
+  //   return -1;
+  return 0;
 }
+
+// int comp2 (const StrPlus* line1, const StrPlus* line2)
+// {
+//   int j = 0, i = 0, cmp = 0;
+//   char s1 = 0, s2 = 0;
+//   if (line1->str[0] == '\n')
+//     return 1;
+//   if (line2->str[0] == '\n')
+//     return -1;
+// }
