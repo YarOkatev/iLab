@@ -8,24 +8,25 @@ typedef struct StringPlus
 {
   char* str;
   int len;
-} StrP;
+} StrPlus;
 
 char* FileRead ();
-StrP* BetterData ();
+StrPlus* BetterData ();
 void Sorting ();
 int FileWrite ();
+int comp (const StrPlus *, const StrPlus *);
 
 int main ()
 {
   int nSymb = 0, nStrings = 0;
   char* poem = NULL;
-  StrP* text = NULL;
+  StrPlus* text = NULL;
   poem = FileRead (&nSymb);
   text = BetterData (poem, nSymb, &nStrings);
-  //Sorting (text, poem);
+  Sorting (text, nStrings);
   FileWrite (text, poem, nStrings);
-
-  // printf("%c \n", text[i].str[text[i].len - 10]);
+  free (poem);
+  free (text);
   return 0;
 }
 
@@ -46,9 +47,9 @@ char* FileRead (int* nSymb)
   return poem;
 }
 
-StrP* BetterData (char* poem, int nSymb, int* nStrings)
+StrPlus* BetterData (char* poem, int nSymb, int* nStrings)
 {
-  StrP* text = (StrP*) calloc (DefSN, sizeof(StrP));
+  StrPlus* text = (StrPlus*) calloc (DefSN, sizeof(StrPlus));
   int k = 0, range = DefSN;
   text[k].str = poem;
   char* prev = poem - 1;
@@ -64,21 +65,21 @@ StrP* BetterData (char* poem, int nSymb, int* nStrings)
     }
     if (k == range - 1)
     {
-      text = (StrP*) realloc (text, (range + DefSN) * sizeof(StrP));
+      text = (StrPlus*) realloc (text, (range + DefSN) * sizeof(StrPlus));
       range += DefSN;
     }
   }
-  text = (StrP*) realloc (text, (k + 1) * sizeof(StrP));
-  *nStrings = k + 1;
+  text = (StrPlus*) realloc (text, (k + 1) * sizeof(StrPlus));
+  *nStrings = k;
   return text;
 }
 
-// void Sorting (StrP* text, char* poem)
-// {
-//   qsort (text,
-// }
+void Sorting (StrPlus* text, int nStrings)
+{
+  qsort (text, nStrings, sizeof(StrPlus), (int(*) (const void *, const void *)) comp);
+}
 
-int FileWrite (StrP* text, char* poem, int nStrings)
+int FileWrite (StrPlus* text, char* poem, int nStrings)
 {
   FILE* output = fopen ("out.txt", "w");
   if (!output)
@@ -88,8 +89,50 @@ int FileWrite (StrP* text, char* poem, int nStrings)
   }
   for (int i = 0; i < nStrings; i++)
   {
-    fwrite (text[i].str, sizeof(char), text[i].len, stdout);
+    fwrite (text[i].str, sizeof(char), text[i].len, output);
   }
   fclose (output);
   return 0;
+}
+
+int comp (const StrPlus* line1, const StrPlus* line2)
+{
+  int j = 0, i = 0, cmp = 0;
+  char s1 = 0, s2 = 0;
+  if (line1->str[0] == '\n')
+    return 1;
+  if (line2->str[0] == '\n')
+    return -1;
+  for (;;)
+  {
+    if (((int) line1->str[i] <= 64) || ((int) line1->str[i] >= 123) ||
+                    (((int) line1->str[i] >= 91) && ((int) line1->str[i] <= 96)))
+      { i++; continue; }
+    if (((int) line2->str[j] <= 64) || ((int) line2->str[j] >= 123) ||
+                    (((int) line2->str[j] >= 91) && ((int) line2->str[j] <= 96)))
+      { j++; continue; }
+    if (j == line2->len)
+      break;
+    if (j == line1->len)
+      break;
+    s1 = (line1->str[i] <= 90) ? (line1->str[i] + 32) : line1->str[i];
+    s2 = (line2->str[j] <= 90) ? (line2->str[j] + 32) : line2->str[j];
+    if (s1 > s2)
+    {
+      cmp = 1;
+      break;
+    }
+    if (s2 > s1)
+    {
+      cmp = -1;
+      break;
+    }
+    j++;
+    i++;
+    if (j == line2->len)
+      break;
+    if (j == line1->len)
+      break;
+  }
+  return cmp;
 }
