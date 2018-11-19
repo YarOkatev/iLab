@@ -1,0 +1,7 @@
+H (s) = 1
+H (s) = (int) 's'
+H (s) = sum ((int) S_i * i)
+H (s) = |s| - битовые операции
+H0 (s) = 0; H_i (s) = ror (H_i-1) ^ S_i  ror: aaaaaaax -> xaaaaaaa
+int x = 5, y = 7;
+GNU hash

@@ -43,7 +43,6 @@ void ConnectNodes (node* left, node* right)
 main.c:
 
 #include <list.h>
-...
 
 int main()
 ..

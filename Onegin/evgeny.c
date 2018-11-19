@@ -97,9 +97,8 @@ int FileWrite (StrPlus* text, int nStrings)
 
 int comp (const StrPlus* line1, const StrPlus* line2)
 {
-  int j = 0, i = 0;
   char s1 = 0, s2 = 0;
-  for (; i < line1->len && j < line2->len;)
+  for (int j = 0, i = 0; i < line1->len && j < line2->len;)
   {
     s1 = line1->str[i];
     s2 = line2->str[j];
@@ -118,8 +117,8 @@ int comp (const StrPlus* line1, const StrPlus* line2)
       return 1;
     if (s2 > s1)
       return -1;
-    j++;
     i++;
+    j++;
   }
   if (s1 == -1 && s2 != -1)
     return 1;
@@ -130,10 +129,10 @@ int comp (const StrPlus* line1, const StrPlus* line2)
 
 void Convert (char* s1, char* s2)
 {
-  if ((*s1 <= 64) || (*s1 >= 123) || ((*s1 >= 91) && (*s1 <= 96)))
+  if ((*s1 < 'A') || (*s1 > 'z') || ((*s1 > 'Z') && (*s1 < 'a')))
     *s1 = -1;
-  if ((*s2 <= 64) || (*s2 >= 123) || ((*s2 >= 91) && (*s2 <= 96)))
+  if ((*s2 < 'A') || (*s2 > 'z') || ((*s2 > 'Z') && (*s2 < 'a')))
     *s2 = -1;
-  *s1 = (*s1 <= 90 && *s1 >= 65) ? (*s1 + 32) : *s1;
-  *s2 = (*s2 <= 90 && *s2 >= 65) ? (*s2 + 32) : *s2;
+  *s1 = (*s1 <= 'Z' && *s1 >= 'A') ? (*s1 + 32) : *s1;
+  *s2 = (*s2 <= 'Z' && *s2 >= 'A') ? (*s2 + 32) : *s2;
 }
