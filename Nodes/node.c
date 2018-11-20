@@ -24,19 +24,25 @@ void OutputList (node* start, int key);
 
 int main () {
   int key = KeyGen ();
-  node* n;
-  node* first = CreateNode (rand () % 1000, NULL, NULL, key);
-  n = first;
-  for (int i = 0; i < 10; i++) {
-    n = CreateNode (rand () % 1000, n, NULL, key);
+  node* first = CreateNode (rand () % 10000, NULL, NULL, key);
+  node* n = first;
+  for (int i = 0; i < 100; i++) {
+    n = CreateNode (rand () % 1000 , n, NULL, key);
+    ConnectNodes (n->prev, n);
   }
-  OutputList (first, key);
+  //
+  // char* a = (char*) calloc (1, sizeof(char));
+  // for (int i = 0; i < 1000; i++)
+  //   a[i] = 1;
+  // printf("\n");
+
+  OutputList (first->next, key);
 }
 
 int KeyGen () {
   int seed = time (NULL);
   srand (seed);
-  int key = rand () % 100000;
+  int key = rand () % 1000000000;
   return key;
 }
 
@@ -48,7 +54,6 @@ node* CreateNode (int val_, node* prev_, node* next_, int key) {
   ret->canary1 = CAN;
   ret->val = val_;
   ret->checksum = val_ ^ key;
-  printf("%d\n", next_);
   ret->prev = prev_;
   ret->next = next_;
   ret->canary2 = CAN;
@@ -64,9 +69,9 @@ void DeleteNode (node* del) {
 void ConnectNodes (node* left, node* right) {
   // assert (!left);
   // assert (!right);
-  // assert (left == right);
   // assert (left->prev == right);
   // assert (right->next == left);
+  //assert (left == right);
   right->prev = left;
   left->next = right;
 }
@@ -78,8 +83,6 @@ void OutputList (node* start, int key) {
       OutputList (start->next, key);
     }
     else
-    printf("Unfortunately, data lost :(\n");
+    printf("Unfortunately, your data lost :(\n");
   }
-  else
-  printf("end\n");
 }
