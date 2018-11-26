@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 const int CAN = 31415;
 
@@ -24,10 +25,10 @@ void OutputList (node* start, int key);
 
 int main () {
   int key = KeyGen ();
-  node* first = CreateNode (rand () % 10000, NULL, NULL, key);
+  node* first = CreateNode (rand () % 1000, NULL, NULL, key);
   node* n = first;
-  for (int i = 0; i < 100; i++) {
-    n = CreateNode (rand () % 1000 , n, NULL, key);
+  for (int i = 0; i < 10; i++) {
+    n = CreateNode (rand () % 1000, n, NULL, key);
     ConnectNodes (n->prev, n);
   }
   //
