@@ -35,12 +35,10 @@ void ConnectNodes (Node* left, Node* right);
 
 int main () {
   int key = KeyGen ();
-
   List* first = InitList ();
-
-  Node* n = InitNode(rand () % 1000, NULL, NULL, key, first);
-  for (int i = 0; i < 10; i++) {
-    n = InitNode(rand () % 1000, n, NULL, key, first);
+  Node* n = InitNode(1, NULL, NULL, key, first);
+  for (int i = 2; i <= 10; i++) {
+    n = InitNode(i, n, NULL, key, first);
     ConnectNodes (n->prev, n);
   }
 
@@ -74,7 +72,7 @@ Node* InitNode(int val_, Node* prev_, Node* next_, int key, List* list) {
     list->tail = ret;
   if (next_ == NULL)
     list->head = ret;
-  list->size -= 1;
+  list->size += 1;
   return ret;
 }
 
@@ -112,7 +110,7 @@ void OutputList (List* out, int key) {
     return;
   }
   Node* tmp = out->tail;
-  for (; i >= 0; i--) {
+  for (; i > 0; i--) {
     if (((tmp->val ^ key) == tmp->checksum) && (tmp->canary1 == CAN) && (tmp->canary2 == CAN)) {
       printf("%d\n", tmp->val);
     }
