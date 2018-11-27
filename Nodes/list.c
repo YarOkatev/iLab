@@ -50,7 +50,6 @@ void ConnectNodes (Node* left, Node* right) {
 }
 
 void OutputList (List* out, int key) {
-  printf("sfgsd\n");
   if (out->canary1 != CAN || out->canary2 != CAN) {
     printf("Unfortunately, your data lost :(\n");
     return;
@@ -62,16 +61,15 @@ void OutputList (List* out, int key) {
   }
   Node* tmp = out->tail;
   for (; i > 0; i--) {
-    if (((tmp->val ^ key) == tmp->checksum) && (tmp->canary1 == CAN) && (tmp->canary2 == CAN) && (tmp != NULL)) {
-      printf("%d ", tmp->val);
-    }
-    else {
-      printf("List was damaged :(\n");
-      break;
-    }
+    if (PrintNode (tmp, key) != 0)
+      return;
     tmp = tmp->next;
   }
   printf("\n");
+}
+
+int Checksum (Node* tmp, int key) {
+  return ((tmp->val ^ key) == tmp->checksum) && (tmp->canary1 == CAN) && (tmp->canary2 == CAN) ? 1 : 0;
 }
 
 List* InitList () {
@@ -83,3 +81,27 @@ List* InitList () {
   tmp->canary2 = CAN;
   return tmp;
 }
+
+void ListDelete (List* del) {
+  if (del->size == 0)
+    return;
+  Node* tmp = NULL;
+  while (del->head != NULL) {
+    tmp = del->head;
+    del->head = del->head->prev;
+    free (tmp);
+  }
+  del->tail = NULL;
+  del->size = 0;
+}
+
+  int PrintNode (Node* tmp, int key) {
+    if (Checksum (tmp, key) && (tmp != NULL)) {
+      printf("%d ", tmp->val);
+    }
+    else {
+      printf("List was damaged :(\n");
+      return -1;
+    }
+    return 0;
+  }

@@ -6,13 +6,19 @@
 int main () {
   int key = KeyGen ();
   List* first = InitList ();
+  Node* m = NULL;
 
   Node* n = InitNode(1, NULL, NULL, key, first);
-  for (int i = 2; i <= 10; i++) {
+  for (int i = 2; i <= 100000; i++) {
     n = InitNode(i, n, NULL, key, first);
     ConnectNodes (n->prev, n);
+    if (i % 5 == 0)
+      m = n;
   }
 
-  printf("%d\n", first->head->checksum);
+  //ListDelete (first);
+  PrintNode (m, key);
   OutputList (first, key);
+  ListDelete (first);
+  free (first);
 }
