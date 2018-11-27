@@ -9,7 +9,7 @@ int main () {
   Node* m = NULL;
 
   Node* n = InitNode(1, NULL, NULL, key, first);
-  for (int i = 2; i <= 100000; i++) {
+  for (int i = 2; i <= 10; i++) {
     n = InitNode(i, n, NULL, key, first);
     ConnectNodes (n->prev, n);
     if (i % 5 == 0)
