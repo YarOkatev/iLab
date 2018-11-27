@@ -28,3 +28,16 @@ int main (){
 // float vec3::Norm() {
 //
 // }
+
+
+node::node():canary1(CAN), left(0), right (0)....{};
+
+
+
+Hash table
+
+class HashTable {
+  list* table;
+  int (*hash) (char*);
+  
+}
