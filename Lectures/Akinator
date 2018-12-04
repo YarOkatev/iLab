@@ -1,0 +1,15 @@
+class node { // node root;
+  char* val;
+  node* left;
+  node* right;
+}
+
+node* readTree (char* str) {
+  sscanf (str,"(%d");
+  node* ret = new node (val);
+  sscanf (str, "%c", temp);
+  if (скобка) {
+  
+  }
+
+}
