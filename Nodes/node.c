@@ -6,19 +6,17 @@
 int main () {
   int key = KeyGen ();
   List* first = InitList ();
-  Node* m = NULL;
 
-  Node* n = InitNode(1, NULL, NULL, key, first);
-  for (int i = 2; i <= 10; i++) {
-    n = InitNode(i, n, NULL, key, first);
-    ConnectNodes (n->prev, n);
-    if (i % 5 == 0)
-      m = n;
+  for (int i = 1; i <= 10; i++) {
+    PushHead (first, i, key);
+    PushTail (first, -i, key);
   }
-
-  //ListDelete (first);
-  PrintNode (m, key);
   OutputList (first, key);
+  Node* x = FindNode (first, 5);
+  Replace (x, 99, key);
+  InsertNode (x, 88, key, 1);
+  OutputList (first, key);
+
   ListDelete (first);
   free (first);
 }
