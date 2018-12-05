@@ -3,7 +3,7 @@
 #include <time.h>
 #include "list.h"
 
-const int AMOUNT = 10;
+const int AMOUNT = 5;
 
 int main () {
   int key = KeyGen ();

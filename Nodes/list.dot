@@ -4,65 +4,35 @@ rankdir = LR;
 	edge[color="black"];
 	canary1 [label = "Canary1 = 31415"]
 	canary2 [label = "Canary2 = 31415"]
-size [label ="Size = 19"]
-	elem_1 [shape = "record"  , label = "<ptr>1\nTAIL\n0x7fdafac02db0 | -9 | {<prev> prev 
+size [label ="Size = 9"]
+	elem_1 [shape = "record"  , label = "<ptr>1\nTAIL\n0x7fa782402bd0 | -4 | {<prev> prev 
 0x0\n| <next> next
- 0x7fdafac02d50} | checksum
- 137679922} "]	elem_2 [shape = "record"  , label = "<ptr>2\n0x7fdafac02d50 | -8 | {<prev> prev 
-0x7fdafac02db0\n| <next> next
- 0x7fdafac02cf0} | checksum
- -218826707} "]	elem_3 [shape = "record"  , label = "<ptr>3\n0x7fdafac02cf0 | -7 | {<prev> prev 
-0x7fdafac02d50\n| <next> next
- 0x7fdafac02c90} | checksum
- -218826580} "]	elem_4 [shape = "record"  , label = "<ptr>4\n0x7fdafac02c90 | -6 | {<prev> prev 
-0x7fdafac02cf0\n| <next> next
- 0x7fdafac02c30} | checksum
- -218826321} "]	elem_5 [shape = "record"  , label = "<ptr>5\n0x7fdafac02c30 | 99 | {<prev> prev 
-0x7fdafac02c90\n| <next> next
- 0x7fdafac02e40} | checksum
- 218825766} "]	elem_6 [shape = "record"  , label = "<ptr>6\n0x7fdafac02e40 | 88 | {<prev> prev 
-0x7fdafac02c30\n| <next> next
- 0x7fdafac02bd0} | checksum
- 218825005} "]	elem_7 [shape = "record"  , label = "<ptr>7\n0x7fdafac02bd0 | -4 | {<prev> prev 
-0x7fdafac02e40\n| <next> next
- 0x7fdafac02b70} | checksum
- -218825639} "]	elem_8 [shape = "record"  , label = "<ptr>8\n0x7fdafac02b70 | -3 | {<prev> prev 
-0x7fdafac02bd0\n| <next> next
- 0x7fdafac02b00} | checksum
- -218826312} "]	elem_9 [shape = "record"  , label = "<ptr>9\n0x7fdafac02b00 | -2 | {<prev> prev 
-0x7fdafac02b70\n| <next> next
- 0x7fdafac02aa0} | checksum
- -218826565} "]	elem_10 [shape = "record"  , label = "<ptr>10\n0x7fdafac02aa0 | -1 | {<prev> prev 
-0x7fdafac02b00\n| <next> next
- 0x7fdafac02a70} | checksum
- -218826726} "]	elem_11 [shape = "record"  , label = "<ptr>11\n0x7fdafac02a70 | 1 | {<prev> prev 
-0x7fdafac02aa0\n| <next> next
- 0x7fdafac02ad0} | checksum
- 218826468} "]	elem_12 [shape = "record"  , label = "<ptr>12\n0x7fdafac02ad0 | 2 | {<prev> prev 
-0x7fdafac02a70\n| <next> next
- 0x7fdafac02b30} | checksum
- 218826711} "]	elem_13 [shape = "record"  , label = "<ptr>13\n0x7fdafac02b30 | 3 | {<prev> prev 
-0x7fdafac02ad0\n| <next> next
- 0x7fdafac02ba0} | checksum
- 218826726} "]	elem_14 [shape = "record"  , label = "<ptr>14\n0x7fdafac02ba0 | 4 | {<prev> prev 
-0x7fdafac02b30\n| <next> next
- 0x7fdafac02c00} | checksum
- 218825121} "]	elem_15 [shape = "record"  , label = "<ptr>15\n0x7fdafac02c00 | 5 | {<prev> prev 
-0x7fdafac02ba0\n| <next> next
- 0x7fdafac02c60} | checksum
- 218825040} "]	elem_16 [shape = "record"  , label = "<ptr>16\n0x7fdafac02c60 | 6 | {<prev> prev 
-0x7fdafac02c00\n| <next> next
- 0x7fdafac02cc0} | checksum
- 218826323} "]	elem_17 [shape = "record"  , label = "<ptr>17\n0x7fdafac02cc0 | 7 | {<prev> prev 
-0x7fdafac02c60\n| <next> next
- 0x7fdafac02d20} | checksum
- 218826706} "]	elem_18 [shape = "record"  , label = "<ptr>18\n0x7fdafac02d20 | 8 | {<prev> prev 
-0x7fdafac02cc0\n| <next> next
- 0x7fdafac02d80} | checksum
- 218826717} "]	elem_19 [shape = "record"  , label = "<ptr>19\nHEAD\n0x7fdafac02d80 | 9 | {<prev> prev 
-0x7fdafac02d20\n| <next> next
+ 0x7fa782402b70} | checksum
+ 1888767202} "]	elem_2 [shape = "record"  , label = "<ptr>2\n0x7fa782402b70 | -3 | {<prev> prev 
+0x7fa782402bd0\n| <next> next
+ 0x7fa782402b00} | checksum
+ -220960957} "]	elem_3 [shape = "record"  , label = "<ptr>3\n0x7fa782402b00 | -2 | {<prev> prev 
+0x7fa782402b70\n| <next> next
+ 0x7fa782402aa0} | checksum
+ -220961216} "]	elem_4 [shape = "record"  , label = "<ptr>4\n0x7fa782402aa0 | -1 | {<prev> prev 
+0x7fa782402b00\n| <next> next
+ 0x7fa782402a70} | checksum
+ -220961055} "]	elem_5 [shape = "record"  , label = "<ptr>5\n0x7fa782402a70 | 99 | {<prev> prev 
+0x7fa782402aa0\n| <next> next
+ 0x7fa782402c60} | checksum
+ 220962509} "]	elem_6 [shape = "record"  , label = "<ptr>6\n0x7fa782402c60 | 88 | {<prev> prev 
+0x7fa782402a70\n| <next> next
+ 0x7fa782402ad0} | checksum
+ 220960918} "]	elem_7 [shape = "record"  , label = "<ptr>7\n0x7fa782402ad0 | 2 | {<prev> prev 
+0x7fa782402c60\n| <next> next
+ 0x7fa782402b30} | checksum
+ 220962620} "]	elem_8 [shape = "record"  , label = "<ptr>8\n0x7fa782402b30 | 3 | {<prev> prev 
+0x7fa782402ad0\n| <next> next
+ 0x7fa782402ba0} | checksum
+ 220961053} "]	elem_9 [shape = "record"  , label = "<ptr>9\nHEAD\n0x7fa782402ba0 | 4 | {<prev> prev 
+0x7fa782402b30\n| <next> next
  0x0} | checksum
- -137679940} "]
+ -1888767142} "]
 	elem_1:<next>->elem_2:<ptr>
 	elem_2:<prev>->elem_1:<ptr>
 	elem_2:<next>->elem_3:<ptr>
@@ -79,24 +49,4 @@ size [label ="Size = 19"]
 	elem_8:<prev>->elem_7:<ptr>
 	elem_8:<next>->elem_9:<ptr>
 	elem_9:<prev>->elem_8:<ptr>
-	elem_9:<next>->elem_10:<ptr>
-	elem_10:<prev>->elem_9:<ptr>
-	elem_10:<next>->elem_11:<ptr>
-	elem_11:<prev>->elem_10:<ptr>
-	elem_11:<next>->elem_12:<ptr>
-	elem_12:<prev>->elem_11:<ptr>
-	elem_12:<next>->elem_13:<ptr>
-	elem_13:<prev>->elem_12:<ptr>
-	elem_13:<next>->elem_14:<ptr>
-	elem_14:<prev>->elem_13:<ptr>
-	elem_14:<next>->elem_15:<ptr>
-	elem_15:<prev>->elem_14:<ptr>
-	elem_15:<next>->elem_16:<ptr>
-	elem_16:<prev>->elem_15:<ptr>
-	elem_16:<next>->elem_17:<ptr>
-	elem_17:<prev>->elem_16:<ptr>
-	elem_17:<next>->elem_18:<ptr>
-	elem_18:<prev>->elem_17:<ptr>
-	elem_18:<next>->elem_19:<ptr>
-	elem_19:<prev>->elem_18:<ptr>
 }
