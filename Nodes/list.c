@@ -129,7 +129,7 @@ void ListDelete (List* del) {
 }
 
 int PrintNode (Node* tmp, int key) {
-  if (MODE == 1) {
+  if ((MODE == 1) && (tmp != NULL)) {
     printf("%d ", tmp->val);
     return 0;
   }
@@ -165,13 +165,21 @@ Node* PushTail (List* list, int val, int key) {
 
 int PopHead (List* list) {
   int value = list->head->val;
-  DeleteNode (list->head, list);
+  Node* tmp = list->head->prev;
+  list->head->prev->next = NULL;
+  free (list->head);
+  list->head = tmp;
+  list->size -= 1;
   return value;
 }
 
 int PopTail (List* list) {
   int value = list->tail->val;
-  DeleteNode (list->tail, list);
+  Node* tmp = list->tail->next;
+  list->tail->next->prev = NULL;
+  free (list->tail);
+  list->tail = tmp;
+  list->size -= 1;
   return value;
 }
 
@@ -181,7 +189,7 @@ Node* Replace (Node* node, int val_, int key) {
   return node;
 }
 
-Node* InsertNode (Node* node, int val, int key, int location) { // before - 0, after - 1
+Node* InsertNode (List* list, Node* node, int val, int key, int location) { // before - 0, after - 1
   Node* tmp = InitNode (val, key);
   if (location == 0) {
     ConnectNodes (node->prev, tmp);
@@ -191,5 +199,56 @@ Node* InsertNode (Node* node, int val, int key, int location) { // before - 0, a
     ConnectNodes (tmp, node->next);
     ConnectNodes (node, tmp);
   }
+  list->size += 1;
   return tmp;
+}
+
+void IllustrateList (List* list, int key) {
+  if (MODE == 0) {
+    if (list->canary1 != CAN || list->canary2 != CAN) {
+      printf("Unfortunately, your data lost :(\n");
+      return;
+    }
+  }
+  FILE * output = fopen("list.dot", "w");
+  fprintf(output, "digraph G{\nrankdir = LR;\n\tnode[shape = \"box\", color=\"black\", fontsize=14];\n\tedge[color=\"black\"];\n");
+  if (list->canary1 == CAN)
+    fprintf(output, "\tcanary1 [label = \"Canary1 = %d\"]\n", list->canary1);
+  if (list->canary2 == CAN)
+    fprintf(output, "\tcanary2 [label = \"Canary2 = %d\"]\n", list->canary2);
+  if (list->size >= 0)
+    fprintf(output, "size [label =\"Size = %d\"]\n", list->size);
+
+  Node* cur = list->tail;
+  int counter = 1;
+  while (cur != NULL) {
+    fprintf(output, "\telem_%d [shape = \"record\"  , label = \"<ptr>%d\\n", counter, counter);
+    if(cur == list->head)
+      fprintf(output, "HEAD\\n");
+    if (cur == list->tail)
+      fprintf(output, "TAIL\\n");
+    fprintf(output, "%p | %d | {<prev> prev \n%p\\n", cur, cur->val, cur->prev);
+    fprintf(output, "| <next> next\n %p} | checksum\n %d} \"]", cur->next, cur->checksum);
+    counter++;
+    cur = cur->next;
+  }
+
+  fprintf(output, "\n");
+  cur = list->tail;
+  counter = 1;
+  while (cur != NULL) {
+    if (!Checksum (cur, key)) {
+      printf("List was damaged :(\n");
+      return;
+    }
+    if (cur->prev != NULL)
+      fprintf(output, "\telem_%d:<prev>->elem_%d:<ptr>\n", counter, counter - 1);
+    if (cur->next != NULL)
+      fprintf(output, "\telem_%d:<next>->elem_%d:<ptr>\n", counter, counter + 1);
+    counter++;
+    cur = cur->next;
+  }
+  fprintf(output, "}");
+  fclose(output);
+  system("dot -Tpng list.dot -o MyList.png");
 }

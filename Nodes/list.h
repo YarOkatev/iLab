@@ -35,8 +35,9 @@ Node* PushHead (List* list, int val, int key);
 Node* PushTail (List* list, int val, int key);
 int PopHead (List* list);
 int PopTail (List* list);
-Node* InsertNode (Node* node, int val, int key, int location); // before - 0, after - 1
+Node* InsertNode (List*list, Node* node, int val, int key, int location); // before - 0, after - 1
 Node* FindNode (List* list, int num);
 Node* Replace (Node* node, int val_, int key);
+void IllustrateList (List* list, int key);
 
 #endif /* _LIST_H_INCLUDED_ */
