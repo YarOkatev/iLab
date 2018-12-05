@@ -3,7 +3,7 @@
 #include <time.h>
 #include "list.h"
 
-const int AMOUNT = 5;
+const int AMOUNT = 100;
 
 int main () {
   int key = KeyGen ();
@@ -18,8 +18,8 @@ int main () {
   Replace (x, 99, key);
   InsertNode (first, x, 88, key, 1);
   OutputList (first, key);
-  PopHead (first);
-  PopTail (first);
+  PopHead (first, key);
+  PopTail (first, key);
   IllustrateList (first, key);
   ListDelete (first);
   free (first);
