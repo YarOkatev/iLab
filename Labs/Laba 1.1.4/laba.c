@@ -2,7 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-const int DefaultNP = 220;
+const int DefaultNP = 200;
 
 int CheckDataZeros ();
 int ReadData ();
@@ -19,7 +19,7 @@ int main ()
   double avg10 = 0, avg40 = 0, delta10 = 0, delta40 = 0;
   int* n20 = (int*) calloc(DefaultNP, sizeof(int));
   int NPoints = 0, DCheck = -1, WCheck = -1;
-  NPoints = ReadData (n20);
+  NPoints = ReadData (&n20);
   if (NPoints <= 0)
     return -1;
   DCheck = CheckDataZeros (NPoints, n20);
@@ -27,12 +27,12 @@ int main ()
     return -1;
   CalculateData (NPoints, n20, &avg10, &avg40, &delta10, &delta40);
   WCheck = WriteData (NPoints, avg10, avg40, delta10, delta40);
-  if (WCheck != 0) 
+  if (WCheck != 0)
     return -1;
   return 0;
 }
 
-int ReadData (int n20[])
+int ReadData (int** n20)
 {
   int arrSize = DefaultNP;
   FILE* file = fopen ("input.in", "r");
@@ -44,17 +44,17 @@ int ReadData (int n20[])
   int point = 0;
   for (;;)
   {
-    if (fscanf (file, "%d", &n20[point]) == EOF)
+    if (fscanf (file, "%d", *n20 + point) == EOF)
       break;
     point++;
     if (point > arrSize - 1)
     {
-      n20 = (int*) realloc(n20, (point + 100) * sizeof(int));
+      *n20 = (int*) realloc(*n20, (point + 100) * sizeof(int));
       arrSize = point + 100;
     }
   }
   fclose (file);
-  n20 = (int*) realloc(n20, (point) * sizeof(int));
+  *n20 = (int*) realloc(*n20, (point) * sizeof(int));
   if (point <= 10)
   {
     printf("Number of measurements is incorrect\n");
