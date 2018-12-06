@@ -2,11 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-<<<<<<< HEAD
-const int DefaultNP = 200;
-=======
 const int DefaultNP = 10;
->>>>>>> 0c9f2331d7cfc3221da91e9e5e6d8e7ce71f85ef
 
 int CheckDataZeros ();
 int ReadData ();
