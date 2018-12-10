@@ -5,8 +5,6 @@
 
 #define _SAVE_MODE_
 
-//const int MODE = 1; // 1 - fast, 0 - slow
-
 const int CAN = 31415;
 
 int KeyGen () {
