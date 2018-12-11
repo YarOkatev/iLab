@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+const int AMOUNT = 10000;
+
 struct Contact {
   long long int num;
   char name[32];
@@ -12,7 +14,7 @@ int main () {
   struct Contact phoneList;
   int space = 0, len = 0;
   srand (time (NULL));
-  for (int i = 0; i < 600; i++) {
+  for (int i = 0; i < AMOUNT; i++) {
     phoneList.num = 79000000000 + rand () % 1000000000;
     phoneList.name[0] = (char) (rand () % 26 + 65);
     space = rand () % 8 + 5;

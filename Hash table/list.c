@@ -31,11 +31,13 @@ Node* FindNode (List* list, int num) {
 }
 
 void DeleteNode (Node* del, List* list) {
-  if (!del) {
-    ConnectNodes (del->prev, del->next);
-  }
-  else {
+  if (del == NULL) {
     printf("Deleting error\n");
+    return;
+  }
+  if (list->size == 1) {
+    ListDelete (list);
+    return;
   }
   if (del->next == NULL)
     list->head = del->prev;
@@ -59,7 +61,7 @@ void ConnectNodes (Node* left, Node* right) {
   left->next = right;
 }
 
-void OutputList (List* out) {
+void PrintList (List* out) {
   int i = out->size;
   if (i == 0) {
     printf("List is empty\n");
@@ -85,8 +87,10 @@ List* InitList () {
 }
 
 void ListDelete (List* del) {
-  if (del->size == 0)
+  if (del->size == 0 ) {
+    printf("List deleting error\n");
     return;
+  }
   Node* tmp = NULL;
   while (del->head != NULL) {
     tmp = del->head;

@@ -3,45 +3,66 @@
 #include <string.h>
 #include "list.h"
 
-const long long int XOR_KEY = 2718281828, MOD_KEY = 20;
+const long long int XOR_KEY = 2718281828, MOD_KEY = 2;
 
 long long int Hash_DigitSum (long long int num);
 long long int Hash_XOR (long long int num);
 long long int Hash_HalfXOR (long long int num);
 long long int Hash_Mod (long long int num);
-void FileRead (List** table, int* amount, long long int (*Hash) (long long int));
+void FileRead (FILE* database, List** table, int* amount, long long int (*Hash) (long long int));
 int FindNum (long long int number, List** table, int amount, long long int (*Hash) (long long int));
 Contact FindInList(int count, List** table, long long int num);
 Contact FindContact (long long int number, List** table, int* amount, long long int (*Hash) (long long int));
 int FindList (List** table, int amount, long long int key);
 void AddContact (Contact newContact, List** table, int* amount, long long int (*Hash) (long long int));
+void DeleteNumber (long long int num, List** table, int* amount, long long int (*Hash) (long long int));
 
 long long int (*MainHash) (long long int) = Hash_XOR;
 
 //----------------------------------------------------------------------------//
 
 int main () {
+  FILE* database = fopen ("contacts.dat", "r");
   Contact newContact = {11111111111,"Alex"};
   List* *table = (List**) calloc (10000, sizeof(List*));
   int amount = 0;
-  FileRead (table, &amount, MainHash);
-
+  FileRead (database, table, &amount, MainHash);
+  printf("amount %d\n", amount );
+  DeleteNumber (799570477143, table, &amount, MainHash);
   AddContact (newContact, table, &amount, MainHash);
   printf("amount %d\n", amount );
 
-  for (int i = 0; i < 10; i++) {
-    printf("\n%d\n", i);
-    printf("KEY %lld\n", table[i]->key);
-    printf("SIZE %d\n", table[i]->size);
-    //OutputList (table[i]);
+  for (int i = 0; i < amount; i++) {
+    //printf("\n%d\n", i);
+    //printf("KEY %lld\n", table[i]->key);
+    //fprintf(stdout, "SIZE %d\n", table[i]->size);
+    //PrintList (table[i]);
   }
-
+  fclose (database);
   return 0;
 }
 
 //----------------------------------------------------------------------------//
 //----------------------------------------------------------------------------//
 
+void DeleteNumber (long long int num, List** table, int* amount, long long int (*Hash) (long long int)) {
+  Contact check = FindContact (num, table, amount, Hash);
+  if (check.num < 0){
+    printf("Contact does not exist\n");
+    return;
+  }
+  long long int delKey = Hash (num);
+  int count = FindList (table, *amount, delKey);
+  Node* tmp = table[count]->tail;
+  for (; tmp != NULL;) {
+    if (tmp->person.num == num) {
+      DeleteNode (tmp, table[count]);
+      break;
+    }
+    tmp = tmp->next;
+  }
+  *amount -= 1;
+  }
 
 void AddContact (Contact newContact, List** table, int* amount, long long int (*Hash) (long long int)) {
   Contact check = FindContact (newContact.num, table, amount, Hash);
@@ -96,8 +117,7 @@ int FindList (List** table, int amount, long long int key) {
   return count;
 }
 
-void FileRead (List** table, int* amount, long long int (*Hash) (long long int)) {
-  FILE* database = fopen ("contacts.dat", "r");
+void FileRead (FILE* database, List** table, int* amount, long long int (*Hash) (long long int)) {
   Contact newContact = {-1, ""};
   for (int i = 0; fscanf (database, "%lld:", &newContact.num) != EOF; i++) {
     fgets (newContact.name, 31, database);
@@ -118,20 +138,20 @@ long long int Hash_DigitSum (long long int num) {
 }
 
 long long int Hash_XOR (long long int num) {
-  long long int hash = num ^ XOR_KEY;
+  long long int hash = (num ^ XOR_KEY) >> 24;
   return hash;
 }
 
 long long int Hash_HalfXOR (long long int num) {
-  long long int hash = 0, halfnum = 0;
+  long long int hash = 0, halfnum = 0, tmp = num;
   int count = 0;
-  for (; (num /= 10) != 0; count++);
-  for (int i = count / 2 + 1; i >= 0; i--) {
-    halfnum *= 10;
+  for (; (tmp /= 10) != 0; count++);
+  for (int i = 0; i < count / 2; i++) {
     halfnum += num % 10;
+    halfnum *= 10;
     num /= 10;
   }
-  hash = num ^ halfnum;
+  hash = (num ^ halfnum) >> 14;
   return hash;
 }
 

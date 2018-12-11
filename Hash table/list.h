@@ -25,7 +25,7 @@ typedef struct _Contact Contact;
 
 Node* InitNode(Contact person_);
 void DeleteNode (Node* del, List* list);
-void OutputList (List* out);
+void PrintList (List* out);
 List* InitList ();
 void ConnectNodes (Node* left, Node* right);
 void ListDelete (List* del);
