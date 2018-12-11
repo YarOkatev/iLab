@@ -3,6 +3,8 @@
 #include <string.h>
 #include "list.h"
 
+const long long int XOR_KEY = 2718281828, MOD_KEY = 20;
+
 long long int Hash_DigitSum (long long int num);
 long long int Hash_XOR (long long int num);
 long long int Hash_HalfXOR (long long int num);
@@ -11,42 +13,28 @@ void FileRead (List** table, int* amount, long long int (*Hash) (long long int))
 int FindNum (long long int number, List** table, int amount, long long int (*Hash) (long long int));
 Contact FindInList(int count, List** table, long long int num);
 Contact FindContact (long long int number, List** table, int* amount, long long int (*Hash) (long long int));
-int FindByKey (List** table, int amount, long long int key);
+int FindList (List** table, int amount, long long int key);
 void AddContact (Contact newContact, List** table, int* amount, long long int (*Hash) (long long int));
 
-const long long int XOR_KEY = 2718281828, MOD_KEY = 20;
-
+long long int (*MainHash) (long long int) = Hash_XOR;
 
 //----------------------------------------------------------------------------//
 
 int main () {
-  //Contact* phoneList = (Contact*) calloc (100, sizeof(Contact));
   Contact newContact = {11111111111,"Alex"};
   List* *table = (List**) calloc (10000, sizeof(List*));
   int amount = 0;
-  FileRead (table, &amount, Hash_Mod);
+  FileRead (table, &amount, MainHash);
 
-  AddContact (newContact, table, &amount, Hash_Mod);
+  AddContact (newContact, table, &amount, MainHash);
   printf("amount %d\n", amount );
 
-  // for (int i = 0; i < amount; i++) {
-  //   printf("\n%d\n", i);
-  //   printf("KEY %lld\n", table[i]->key);
-  //   printf("SIZE %d\n", table[i]->size);
-  //   //OutputList (table[i]);
-  // }
-  AddContact (newContact, table, &amount, Hash_Mod);
-  AddContact (newContact, table, &amount, Hash_Mod);
-  AddContact (newContact, table, &amount, Hash_Mod);
-  //long long int num = 89195136321, hash = 0;
-  // hash = Hash_DigitSum (num);
-  // printf("%lld\n", hash);
-  // hash = Hash_XOR (num);
-  // printf("%lld\n", hash);
-  // hash = Hash_HalfXOR (num);
-  // printf("%lld\n", hash);
-  // hash = Hash_Mod (num);
-  // printf("%lld\n", hash);
+  for (int i = 0; i < 10; i++) {
+    printf("\n%d\n", i);
+    printf("KEY %lld\n", table[i]->key);
+    printf("SIZE %d\n", table[i]->size);
+    //OutputList (table[i]);
+  }
 
   return 0;
 }
@@ -62,8 +50,7 @@ void AddContact (Contact newContact, List** table, int* amount, long long int (*
     return;
   }
   long long int newKey = Hash (newContact.num);
-  int count = FindByKey (table, *amount, newKey);
-  //printf("count = %d\n", count);
+  int count = FindList (table, *amount, newKey);
   if (count >= 0) {
     PushHead (table[count], newContact);
   }
@@ -78,7 +65,7 @@ void AddContact (Contact newContact, List** table, int* amount, long long int (*
 Contact FindContact (long long int number, List** table, int* amount, long long int (*Hash) (long long int)) {
   long long int key = Hash (number);
   Contact ret = {-1, ""};
-  int count = FindByKey (table, *amount, key);
+  int count = FindList (table, *amount, key);
   if (count < 0)
     return ret;
   else
@@ -99,7 +86,7 @@ Contact FindInList(int count, List** table, long long int num) {
   return ret;
 }
 
-int FindByKey (List** table, int amount, long long int key) {
+int FindList (List** table, int amount, long long int key) {
   int count = 0;
   for (;count < amount; count++){
     if (key == table[count]->key)
@@ -138,8 +125,8 @@ long long int Hash_XOR (long long int num) {
 long long int Hash_HalfXOR (long long int num) {
   long long int hash = 0, halfnum = 0;
   int count = 0;
-  for (; (num /= 10) == 0; count++);
-  for (int i = count / 2; i >= 0; i--) {
+  for (; (num /= 10) != 0; count++);
+  for (int i = count / 2 + 1; i >= 0; i--) {
     halfnum *= 10;
     halfnum += num % 10;
     num /= 10;
