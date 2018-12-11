@@ -65,6 +65,7 @@ void OutputList (List* out) {
     printf("List is empty\n");
     return;
   }
+  //printf(" KEY = %lld\n", out->key);
   Node* tmp = out->tail;
   for (; i > 0; i--) {
     if (PrintNode (tmp) != 0)
@@ -76,6 +77,7 @@ void OutputList (List* out) {
 
 List* InitList () {
   List* tmp = (List*) calloc (1, sizeof(List));
+  tmp->key = 0;
   tmp->size = 0;
   tmp->head = NULL;
   tmp->tail = NULL;
@@ -96,7 +98,7 @@ void ListDelete (List* del) {
 }
 
 int PrintNode (Node* tmp) {
-    printf("%d ", tmp->person);
+    printf(" Phone number: +%lld\n Name: %s\n", tmp->person.num, tmp->person.name);
     return 0;
   return 0;
 }

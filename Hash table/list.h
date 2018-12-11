@@ -3,7 +3,7 @@
 
 struct _Contact {
   long long int num;
-  char name[64];
+  char name[32];
 };
 
 struct _Node {
@@ -13,6 +13,7 @@ struct _Node {
 };
 
 struct _List {
+  long long int key;
   int size;
   struct _Node* head;
   struct _Node* tail;

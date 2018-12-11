@@ -12,7 +12,7 @@ int main () {
   struct Contact phoneList;
   int space = 0, len = 0;
   srand (time (NULL));
-  for (int i = 0; i < 100; i++) {
+  for (int i = 0; i < 600; i++) {
     phoneList.num = 79000000000 + rand () % 1000000000;
     phoneList.name[0] = (char) (rand () % 26 + 65);
     space = rand () % 8 + 5;
@@ -27,7 +27,7 @@ int main () {
       }
     }
     phoneList.name[len] = '\0';
-    fprintf(book,"%lld %s\n", phoneList.num, phoneList.name);
+    fprintf(book,"%lld:%s\n", phoneList.num, phoneList.name);
   }
   fclose (book);
   return 0;
