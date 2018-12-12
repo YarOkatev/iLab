@@ -14,36 +14,53 @@ int FindNum (long long int number, List** table, int amount, long long int (*Has
 Contact FindInList(int count, List** table, long long int num);
 Contact FindContact (long long int number, List** table, int* amount, long long int (*Hash) (long long int));
 int FindList (List** table, int amount, long long int key);
-void AddContact (Contact newContact, List** table, int* amount, long long int (*Hash) (long long int));
+void CreateContact (Contact newContact, List** table, int* amount, long long int (*Hash) (long long int));
 void DeleteNumber (long long int num, List** table, int* amount, long long int (*Hash) (long long int));
+void AddContact (List** table, int* amount, long long int (*Hash) (long long int));
+void FileWrite (FILE* database, List** table, int* amount);
 
-long long int (*MainHash) (long long int) = Hash_XOR;
+long long int (*MainHash) (long long int) = Hash_Mod;
 
 //----------------------------------------------------------------------------//
 
 int main () {
-  FILE* database = fopen ("contacts.dat", "r");
-  Contact newContact = {11111111111,"Alex"};
+  FILE* database = fopen ("contacts.dat", "r+");
   List* *table = (List**) calloc (10000, sizeof(List*));
   int amount = 0;
   FileRead (database, table, &amount, MainHash);
-  printf("amount %d\n", amount );
-  DeleteNumber (799570477143, table, &amount, MainHash);
-  AddContact (newContact, table, &amount, MainHash);
-  printf("amount %d\n", amount );
 
-  for (int i = 0; i < amount; i++) {
-    //printf("\n%d\n", i);
-    //printf("KEY %lld\n", table[i]->key);
-    //fprintf(stdout, "SIZE %d\n", table[i]->size);
-    //PrintList (table[i]);
-  }
-  fclose (database);
+  printf("amount %d\n", amount);
+
+  // for (int i = 0; i < amount; i++) {
+  //   //printf("\n%d\n", i);
+  //   //printf("KEY %lld\n", table[i]->key);
+  //   //fprintf(stdout, "SIZE %d\n", table[i]->size);
+  //   //PrintList (table[i]);
+  // }
+
+  FileWrite (database, table, &amount);
+  free (table);
   return 0;
 }
 
 //----------------------------------------------------------------------------//
 //----------------------------------------------------------------------------//
+
+void FileWrite (FILE* database, List** table, int* amount) {
+  for (int i = 0; i < *amount; i++) {
+    PrintList2File (table[i], database);
+  }
+  fclose (database);
+}
+
+void AddContact (List** table, int* amount, long long int (*Hash) (long long int)) {
+  printf("Enter phone number and name:\n");
+  Contact newContact = {-1, ""};
+  scanf ("%lld ", &newContact.num);
+  fgets (newContact.name, 31, stdin);
+  newContact.name[strlen (newContact.name) - 1] = '\0';
+  CreateContact (newContact, table, amount, Hash);
+}
 
 void DeleteNumber (long long int num, List** table, int* amount, long long int (*Hash) (long long int)) {
   Contact check = FindContact (num, table, amount, Hash);
@@ -64,7 +81,7 @@ void DeleteNumber (long long int num, List** table, int* amount, long long int (
   *amount -= 1;
   }
 
-void AddContact (Contact newContact, List** table, int* amount, long long int (*Hash) (long long int)) {
+void CreateContact (Contact newContact, List** table, int* amount, long long int (*Hash) (long long int)) {
   Contact check = FindContact (newContact.num, table, amount, Hash);
   if (check.num > 0){
     printf("Contact already exist\n");
@@ -122,9 +139,9 @@ void FileRead (FILE* database, List** table, int* amount, long long int (*Hash) 
   for (int i = 0; fscanf (database, "%lld:", &newContact.num) != EOF; i++) {
     fgets (newContact.name, 31, database);
     newContact.name[strlen (newContact.name) - 1] = '\0';
-    //printf("%lld %s\n",newContact.num,newContact.name );
-    AddContact (newContact, table, amount, Hash);
+    CreateContact (newContact, table, amount, Hash);
   }
+  fclose (database);
 }
 
 long long int Hash_DigitSum (long long int num) {

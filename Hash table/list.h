@@ -38,5 +38,7 @@ Node* InsertNode (List*list, Node* node, Contact person, int location); // befor
 Node* FindNode (List* list, int num);
 Node* Replace (Node* node, Contact person_);
 void IllustrateList (List* list);
+int PrintNode2File (Node* tmp, FILE* file);
+void PrintList2File (List* out, FILE* file);
 
 #endif /* _LIST_H_INCLUDED_ */

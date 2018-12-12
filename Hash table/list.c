@@ -36,9 +36,12 @@ void DeleteNode (Node* del, List* list) {
     return;
   }
   if (list->size == 1) {
-    ListDelete (list);
-    return;
+    free (del);
+    list->head = NULL;
+    list->tail = NULL;
+    list->size = 0;
   }
+  ConnectNodes (del->prev, del->next);
   if (del->next == NULL)
     list->head = del->prev;
   if (del->prev == NULL)
@@ -67,7 +70,6 @@ void PrintList (List* out) {
     printf("List is empty\n");
     return;
   }
-  //printf(" KEY = %lld\n", out->key);
   Node* tmp = out->tail;
   for (; i > 0; i--) {
     if (PrintNode (tmp) != 0)
@@ -75,6 +77,19 @@ void PrintList (List* out) {
     tmp = tmp->next;
   }
   printf("\n");
+}
+
+void PrintList2File (List* out, FILE* file) {
+  int i = out->size;
+  if (i == 0) {
+    printf("List is empty\n");
+    return;
+  }
+  Node* tmp = out->tail;
+  for (; i > 0; i--) {
+    PrintNode2File (tmp, file);
+    tmp = tmp->next;
+  }
 }
 
 List* InitList () {
@@ -102,8 +117,12 @@ void ListDelete (List* del) {
 }
 
 int PrintNode (Node* tmp) {
-    printf(" Phone number: +%lld\n Name: %s\n", tmp->person.num, tmp->person.name);
-    return 0;
+  printf(" Phone number: +%lld\n Name: %s\n", tmp->person.num, tmp->person.name);
+  return 0;
+}
+
+int PrintNode2File (Node* tmp, FILE* file) {
+  fprintf(file, "%lld:%s\n", tmp->person.num, tmp->person.name);
   return 0;
 }
 
