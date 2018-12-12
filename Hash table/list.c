@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include "list.h"
 
 Node* InitNode(Contact person_) {
   Node* ret = (Node*) calloc (1, sizeof(Node));

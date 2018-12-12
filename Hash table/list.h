@@ -1,9 +1,15 @@
 #ifndef _LIST_H_INCLUDED_
 #define _LIST_H_INCLUDED_
 
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
+const int MAXLEN = 64;
+
 struct _Contact {
   long long int num;
-  char name[32];
+  char name[64];
 };
 
 struct _Node {
@@ -40,5 +46,7 @@ Node* Replace (Node* node, Contact person_);
 void IllustrateList (List* list);
 int PrintNode2File (Node* tmp, FILE* file);
 void PrintList2File (List* out, FILE* file);
+
+#include "list.c"
 
 #endif /* _LIST_H_INCLUDED_ */
