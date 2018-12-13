@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-const int AMOUNT = 10;
+const int AMOUNT = 10000;
 
 struct Contact {
   long long int num;

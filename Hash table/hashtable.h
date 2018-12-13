@@ -1,10 +1,9 @@
 #ifndef _HASH_H_INCLUDED_
 #define _HASH_H_INCLUDED_
 
-// #include <stdio.h>
 #include "list.h"
 
-const long long int XOR_KEY = 2718281828, MOD_KEY = 2;
+const long long int XOR_KEY = 2718281828, MOD_KEY = 100;
 
 long long int Hash_DigitSum (long long int num);
 long long int Hash_XOR (long long int num);

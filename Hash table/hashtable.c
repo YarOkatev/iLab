@@ -1,3 +1,4 @@
+//#include "hashtable.h"
 
 void FileWrite (FILE* database, List** table, int* amount) {
   for (int i = 0; i < *amount; i++) {
@@ -12,6 +13,11 @@ void AddContact (List** table, int* amount, long long int (*Hash) (long long int
   scanf ("%lld ", &newContact.num);
   fgets (newContact.name, MAXLEN - 1, stdin);
   newContact.name[strlen (newContact.name) - 1] = '\0';
+  if (newContact.num == -1) {
+    printf("Incorrect number\n");
+    AddContact (table, amount, Hash);
+    return;
+  }
   CreateContact (newContact, table, amount, Hash);
 }
 
@@ -94,7 +100,7 @@ void FileRead (FILE* database, List** table, int* amount, long long int (*Hash) 
     newContact.name[strlen (newContact.name) - 1] = '\0';
     CreateContact (newContact, table, amount, Hash);
   }
-  //fclose (database);
+  //rewind (database);
 }
 
 long long int Hash_DigitSum (long long int num) {
