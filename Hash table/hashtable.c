@@ -42,7 +42,7 @@ void DeleteNumber (long long int num, List** table, int* amount, long long int (
 
 void CreateContact (Contact newContact, List** table, int* amount, long long int (*Hash) (long long int)) {
   Contact check = FindContact (newContact.num, table, amount, Hash);
-  if (check.num > 0){
+  if (check.num > 0) {
     printf("Contact already exist\n");
     return;
   }
@@ -100,6 +100,7 @@ void FileRead (FILE* database, List** table, int* amount, long long int (*Hash) 
     newContact.name[strlen (newContact.name) - 1] = '\0';
     CreateContact (newContact, table, amount, Hash);
   }
+  fclose (database);
   //rewind (database);
 }
 
