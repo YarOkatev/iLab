@@ -43,7 +43,6 @@ Contact PopTail (List* list);
 Node* InsertNode (List*list, Node* node, Contact person, int location); // before - 0, after - 1
 Node* FindNode (List* list, int num);
 Node* Replace (Node* node, Contact person_);
-void IllustrateList (List* list);
 int PrintNode2File (Node* tmp, FILE* file);
 void PrintList2File (List* out, FILE* file);
 

@@ -98,10 +98,6 @@ List* InitList () {
 }
 
 void ListDelete (List* del) {
-  if (del->size == 0 ) {
-    printf("List deleting error\n");
-    return;
-  }
   Node* tmp = NULL;
   while (del->head != NULL) {
     tmp = del->head;
@@ -109,7 +105,7 @@ void ListDelete (List* del) {
     free (tmp);
   }
   del->tail = NULL;
-  del->size = 0;
+  free (del);
 }
 
 int PrintNode (Node* tmp) {
