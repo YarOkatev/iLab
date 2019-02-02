@@ -3,7 +3,6 @@
 #define _AKINATOR_CPP_INCLUDED_
 
 #include "akinator.h"
-
 long fileSize (FILE* file) {
     long size = 0;
     fseek(file, 0, SEEK_END);
@@ -44,7 +43,8 @@ void parsing (int* i, const int size, char* readbuf, Node* cur) {
             parsing (i, size, readbuf, cur->right);
             return;
         }
-        if (readbuf[*i] != '?' && readbuf[*i - 1] == '{') {
+        if (readbuf[*i] == '@') {
+            *i += 1;
             while (readbuf[*i] != '}' && *i < size) {
                 tempbuf[j] = readbuf[*i];
                 *i += 1;
@@ -59,7 +59,7 @@ void parsing (int* i, const int size, char* readbuf, Node* cur) {
 void writeDB (FILE* file, Node* tree) {
     if (tree != NULL) {
         if (tree->val == NULL)
-            fprintf (file, "{}");
+            fprintf (file, "{@}");
         else if (tree->val[0] == '?') {
             fprintf(file, "{%s:", tree->val);
             writeDB (file, tree->left);
@@ -67,7 +67,7 @@ void writeDB (FILE* file, Node* tree) {
             fprintf(file, "}");
         }
         else {
-            fprintf(file, "{%s}", tree->val);
+            fprintf(file, "{@%s}", tree->val);
             writeDB(file, tree->left);
             writeDB(file, tree->right);
         }

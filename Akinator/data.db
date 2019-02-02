@@ -1,1 +1,1 @@
-{?vegetable:{?red:{tomato}{cucumber}}{?sweet:{?green:{apple}{banana}}{?spicy:{?bold:{kiwi}{}}{pepper}}}}
+{?vegetable:{?red:{@tomato}{@cucumber}}{?sweet:{?green:{@apple}{@banana}}{?spicy:{?bold:{@kiwi}{?hrustit:{@oreh}{@}}}{@sweet pepper}}}}
