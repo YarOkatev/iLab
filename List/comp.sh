@@ -1,7 +1,7 @@
 #!/bin/bash
 
-gcc -c node.c -o node.o
+gcc -c main.c -o main.o
 gcc -c list.c -o list.o
-gcc -Wall -g node.o list.o -o node.exe
+gcc -Wall -g main.o list.o -o main.exe
 rm *.o
 echo "Compilation succeful"
