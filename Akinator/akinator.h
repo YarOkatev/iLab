@@ -31,7 +31,7 @@ Node_::Node_ () {
 Node_::~Node_ () {
     delete val;
 }
-loh
+
 typedef class Node_ Node;
 
 size_t fileSize (FILE* file);
