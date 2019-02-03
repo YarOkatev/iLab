@@ -1,6 +1,9 @@
-#ifndef _AKINATOR_H_INCLUDED_
+//
+// Created by Ярослав Окатьев  on 02/02/2019.
+//
 
-#define _AKINATOR_H_INCLUDED_
+#ifndef AKINATOR_AKINATOR_H
+#define AKINATOR_AKINATOR_H
 
 #include <cstdio>
 #include <cstdlib>
@@ -31,7 +34,7 @@ Node_::~Node_ () {
 
 typedef class Node_ Node;
 
-long fileSize (FILE* file);
+size_t fileSize (FILE* file);
 Node* readDB (FILE* file);
 void parsing (int* i, int size, char* readbuf, Node* cur);
 void writeDB(FILE* file, Node *tree);
@@ -43,4 +46,4 @@ void removeTree (Node* tree);
 
 #include "akinator.cpp"
 
-#endif
+#endif //AKINATOR_AKINATOR_H
