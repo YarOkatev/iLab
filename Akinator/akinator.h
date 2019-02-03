@@ -36,7 +36,7 @@ typedef class Node_ Node;
 
 size_t fileSize (FILE* file);
 Node* readDB (FILE* file);
-void parsing (int* i, int size, char* readbuf, Node* cur);
+void parsing (int* i, size_t size, char* readbuf, Node* cur);
 void writeDB(FILE* file, Node *tree);
 void play (Node* cur);
 void study (Node* cur);
