@@ -12,7 +12,6 @@ int func4 (int x, int y, int z, int q, int t);
 
 int main () {
   char* e = (char*) calloc (256, sizeof(char));
-  e = "говно";
   for (int i = 0; i < 2; i++) {
 
     Hash (e);
@@ -22,14 +21,12 @@ int main () {
 int Hash (char* a) {
   unsigned int* hash = (unsigned int*) calloc (4, sizeof(unsigned int));
   char* shash = (char*) calloc (33, sizeof(char));
-  //scanf ("%s", a);
   int* b = (int*) a;
   for (int i = 0; i < 64; i++) {
     hash[0] += func1 (b[i], b[(i + 1) % 64], b[(i + 2) % 64], hash[3], hash[2]) + KEY * sin (i + 1);
     hash[1] += func2 (b[i], b[(i + 2) % 64], b[(i + 1) % 64], hash[0], hash[1]) + KEY * sin (2 * i);
     hash[2] += func3 (b[i], b[(i + 1) % 64], b[(i + 2) % 64], hash[3], hash[1]) + KEY * sin (3 * i);
     hash[3] += func4 (b[i], b[(i + 2) % 64], b[(i + 2) % 64], hash[0], hash[2]) + KEY * sin (4 * i);
-    //printf ("temp = %X %X %X %X \n", hash[0], hash[1], hash[2], hash[3]);
   }
   sprintf (shash, "%X%X%X%X", hash[0], hash[1], hash[2], hash[3]);
   printf("%s %s\n", shash, a);
