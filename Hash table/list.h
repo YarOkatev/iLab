@@ -29,7 +29,7 @@ typedef struct _List List;
 typedef struct _Node Node;
 typedef struct _Contact Contact;
 
-Node* InitNode(Contact person_);
+Node* InitNode (Contact person_);
 void DeleteNode (Node* del, List* list);
 void PrintList (List* out);
 List* InitList ();
@@ -46,6 +46,6 @@ Node* Replace (Node* node, Contact person_);
 int PrintNode2File (Node* tmp, FILE* file);
 void PrintList2File (List* out, FILE* file);
 
-#include "list.c"
+//#include "list.c"
 
 #endif /* _LIST_H_INCLUDED_ */

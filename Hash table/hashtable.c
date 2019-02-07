@@ -102,7 +102,7 @@ int FindList (List** table, long long int key) {
 
 void FileRead (FILE* database, List** table, long long int (*Hash) (long long int)) {
   Contact newContact = {-1, ""};
-  for (int i = 0; fscanf (database, "%lld:", &newContact.num) != EOF; i++) {
+  while (fscanf (database, "%lld:", &newContact.num) != EOF) {
     fgets (newContact.name, MAXLEN - 1, database);
     newContact.name[strlen (newContact.name) - 1] = '\0';
     CreateContact (newContact, table, Hash);

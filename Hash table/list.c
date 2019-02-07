@@ -1,5 +1,6 @@
+#include "list.h"
 
-Node* InitNode(Contact person_) {
+Node* InitNode (Contact person_) {
   Node* ret = (Node*) calloc (1, sizeof(Node));
   ret->next = NULL;
   ret->prev = NULL;

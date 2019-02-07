@@ -22,6 +22,6 @@ void DeleteNumber (long long int num, List** table, long long int (*Hash) (long 
 void AddContact (List** table, long long int (*Hash) (long long int));
 void FileWrite (FILE* database, List** table);
 
-#include "hashtable.c"
+//#include "hashtable.c"
 
 #endif /* _HASH_H_INCLUDED_ */

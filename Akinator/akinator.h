@@ -1,7 +1,3 @@
-//
-// Created by Ярослав Окатьев  on 02/02/2019.
-//
-
 #ifndef AKINATOR_AKINATOR_H
 #define AKINATOR_AKINATOR_H
 

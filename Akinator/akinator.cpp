@@ -60,7 +60,7 @@ void parsing (int* i, size_t size, char* readbuf, Node* cur) {
 void writeDB (FILE* file, Node* tree) {
 	if (tree != NULL) {
 		if (tree->val == NULL)
-			fprintf (file, "{}");
+			fprintf (file, "{@}");
 		else if (tree->val[0] == '?') {
 			fprintf (file, "{%s:", tree->val);
 			writeDB (file, tree->left);
