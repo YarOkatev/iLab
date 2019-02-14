@@ -22,7 +22,7 @@ public:
 	int top ();
 	int size ();
 	bool empty ();
-	void swap (Stack other);
+	//void swap (Stack other);
 	int capacity ();
 };
 
