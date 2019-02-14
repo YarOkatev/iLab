@@ -32,7 +32,7 @@ Node_::Node_ ():
     {};
 
 Node_::~Node_ () {
-    delete val;
+    delete[] val;
 }
 
 char* Node_::getValue () {
