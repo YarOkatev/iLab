@@ -1,11 +1,11 @@
 #include "akinator.h"
 
 int main () {
-    FILE* file = fopen ("data.db", "r");
+    char* fileName = const_cast<char*>("data.db");
+    FILE* file = fopen (fileName, "r");
     Node* tree = readDB (file);
-    fclose (file);
     play (tree);
-    file = fopen ("data.db", "w");
+    file = fopen (fileName, "w");
     writeDB (file, tree);
     fclose (file);
     removeTree (tree);
