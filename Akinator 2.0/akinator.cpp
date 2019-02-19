@@ -1,8 +1,37 @@
 //
 // Created by Ярослав Окатьев  on 02/02/2019.
 //
-
 #include "akinator.h"
+
+Node_::~Node_ () {
+	delete[] val;
+}
+
+char* Node_::getValue () {
+	return val;
+}
+
+Node_* Node_::getLeft () {
+	return left;
+}
+
+Node_* Node_::getRight () {
+	return right;
+}
+
+void Node_::setValue (char* data) {
+	val = data;
+}
+
+void Node_::setLeft (Node_* left_) {
+	left = left_;
+}
+
+void Node_::setRight (Node_* right_) {
+	right = right_;
+};
+
+//------------------------------------------------------------------------------------------//
 
 size_t fileSize (FILE* file) {
 	size_t size = 0;
@@ -158,25 +187,25 @@ void study (Node* cur) {
 
 int chooseVariant (char first, char second) {
 	int ans = '\0';
-	int flag = 0;
+	int isNotCorrect = 0;
 	while (true) {
 		ans = getchar ();
 		while (getchar () != '\n')
-			flag++;
-		if (ans == first && flag == 0) {
+			isNotCorrect++;
+		if (ans == first && isNotCorrect == 0) {
 			return 1;
-		} else if (ans == second && flag == 0) {
+		} else if (ans == second && isNotCorrect == 0) {
 			return 2;
 		} else {
 			printf ("Please, type '%c' or '%c'\n", first, second);
-			flag = 0;
+			isNotCorrect = 0;
 			continue;
 		}
 	}
 }
 
 char* readAnswer () {
-	int flag = 0;
+	int isNotCorrect = 0;
 	char* input = new char[BUF_SIZE] {};
 	while (true) {
 		fgets (input, BUF_SIZE, stdin);
@@ -185,17 +214,17 @@ char* readAnswer () {
 			input[len] = '\0';
 			len--;
 			if (len < 1) {
-				flag = 1;
+				isNotCorrect = 1;
 				break;
 			}
 		}
-		for (int i = 0; i < len && flag != 1; i++) {
-			if (!(isalpha (input[i]) && input[i] != ' '))
-				flag = 1;
+		for (int i = 0; i < len && isNotCorrect != 1; i++) {
+			if (!(isalpha (input[i]) || input[i] == ' '))
+				isNotCorrect = 1;
 		}
-		if (flag != 0) {
+		if (isNotCorrect != 0) {
 			printf ("Incorrect input, please, retype:\n");
-			flag = 0;
+			isNotCorrect = 0;
 			bzero (input, BUF_SIZE);
 		} else {
 			return input;

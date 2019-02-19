@@ -31,34 +31,6 @@ Node_::Node_ ():
     right (nullptr)
     {};
 
-Node_::~Node_ () {
-    delete[] val;
-}
-
-char* Node_::getValue () {
-    return val;
-}
-
-Node_* Node_::getLeft () {
-    return left;
-}
-
-Node_* Node_::getRight () {
-    return right;
-}
-
-void Node_::setValue (char* data) {
-    val = data;
-}
-
-void Node_::setLeft (Node_* left_) {
-    left = left_;
-}
-
-void Node_::setRight (Node_* right_) {
-    right = right_;
-};
-
 typedef class Node_ Node;
 
 size_t fileSize (FILE* file);
@@ -72,6 +44,6 @@ char* readAnswer ();
 void removeTree (Node* tree);
 void changeAnswer (Node* cur);
 
-#include "akinator.cpp"
+//#include "akinator.cpp"
 
 #endif //AKINATOR_AKINATOR_H
