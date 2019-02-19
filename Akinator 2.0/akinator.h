@@ -44,6 +44,6 @@ char* readAnswer ();
 void removeTree (Node* tree);
 void changeAnswer (Node* cur);
 
-//#include "akinator.cpp"
+#include "akinator.cpp"
 
 #endif //AKINATOR_AKINATOR_H
