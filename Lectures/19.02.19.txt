@@ -1,0 +1,13 @@
+push
+pop
+add, sub, div, mult
+print 
+halt
+cmp
+jmp
+je - equal
+jne - not equal
+ja/jb <>
+:metka
+---
+sin cos
