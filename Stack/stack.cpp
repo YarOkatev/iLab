@@ -57,11 +57,39 @@ int Stack::capacity () {
 	return capacity_;
 }
 
-void Stack::math (Node* root) {
-	if (root != nullptr) {
-		math (root->left);
-		math (root->right);
-	}
-
-
+void Stack::add () {
+	int a = pop ();
+	int b = pop ();
+	push (a + b);
 }
+
+void Stack::sub () {
+	int a = pop ();
+	int b = pop ();
+	push (a - b);
+}
+
+void Stack::div () {
+	int a = pop ();
+	int b = pop ();
+	push (a / b);
+}
+
+void Stack::mul () {
+	int a = pop ();
+	int b = pop ();
+	push (a * b);
+}
+
+int Stack::cmp () {
+	int a = pop ();
+	int b = top ();
+	push (a);
+	if (a == b)
+		return 0;
+	if (a > b)
+		return 1;
+	else
+		return 2;
+}
+

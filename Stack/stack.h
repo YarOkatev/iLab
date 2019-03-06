@@ -23,7 +23,11 @@ public:
 	int size ();
 	bool empty ();
 	int capacity ();
-	void math (Node* root);
+	void add ();
+	void sub ();
+	void div ();
+	void mul ();
+	int cmp ();
 };
 
 #endif //STACK_STACK_H
