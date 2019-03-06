@@ -1,0 +1,24 @@
+template <typename T>
+
+class Vector
+{
+	T data_[10];
+	//...
+	int& operator[] (int i);
+};
+
+int main () {
+	Vector <int> v;
+	int x = v[3]; // = int x = v.operator[] (3);
+	//
+	v[3] = 7; // = (v.operator[] (3)) = 7;
+}
+// Шаблоны
+
+template <typename T>
+int& Vector<T>::operator[] (int i) {
+	assert (0 <= i && i < size);
+	return data_[i];
+}
+
+// класс массив

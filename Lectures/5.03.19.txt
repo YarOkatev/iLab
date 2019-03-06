@@ -1,0 +1,32 @@
+//конструктор копирования
+
+class Stack
+{
+	int* data;
+	char ptr;
+public:
+	Stack();
+	Stack(const Class& Obj);
+	friend Stack operator= (const ...s1, ..s2);
+	friend CPU; //(class CPU)
+}
+
+
+Stack::Stack (const class& Obj)
+{
+	data = memcpy (obj.data);
+	ptr = obj.ptr;
+}
+
+
+//CPU
+
+struct token
+{
+	char* data;
+	int type;
+}
+
+
+//(enum, xyz x - число арг, y - команда, z --)
+// dump - friend for Stack
