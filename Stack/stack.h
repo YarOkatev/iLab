@@ -22,8 +22,8 @@ public:
 	int top ();
 	int size ();
 	bool empty ();
-	//void swap (Stack other);
 	int capacity ();
+	void math (Node* root);
 };
 
 #endif //STACK_STACK_H

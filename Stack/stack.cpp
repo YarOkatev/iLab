@@ -6,7 +6,6 @@
 
 int Stack::size () {
 	return size_;
-	return 0;
 }
 
 Stack::Stack (int capacity) :
@@ -54,32 +53,15 @@ bool Stack::empty () {
 	return true;
 }
 
-void Stack::swap (Stack other) {
-	if (size () > other.capacity () || other.size () > capacity_) {
-		printf ("Size > capacity\n");
-		return;
-	}
-
-	int firstSize = size ();
-	int secondSize = other.size ();
-	int* firstTmp = new int[size ()];
-	int* secondTmp = new int[other.size ()];
-
-	for (int i = 0; !empty (); i++)
-		firstTmp[i] = pop ();
-	for (int i = 0; !other.empty (); i++)
-		secondTmp[i] = other.pop ();
-	for (int i = firstSize; i > 0; i--)
-		other.push (firstTmp[i - 1]);
-	for (int i = secondSize; i > 0; i--)
-		push (secondTmp[i - 1]);
-
-	delete[] secondTmp;
-	delete[] firstTmp;
-}
 int Stack::capacity () {
 	return capacity_;
-};
+}
+
+void Stack::math (Node* root) {
+	if (root != nullptr) {
+		math (root->left);
+		math (root->right);
+	}
 
 
-
+}
