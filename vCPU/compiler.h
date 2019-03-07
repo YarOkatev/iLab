@@ -27,12 +27,12 @@ struct definedCommand
 
 size_t fileSize (FILE* file);
 std::string* fileRead (FILE* file);
-struct userCommand* readUserProgram (FILE* programFile);
+struct userCommand* readUserProgram (FILE* programFile, int* programLen);
 void skipSpaces (std::string& str, int* i);
 void assignString (std::string* name_, std::string& rawInput, int* i);
-std::string* generateCommandList (FILE* config);
+struct definedCommand* generateCommandList (FILE* config, int* cmdAmount);
 int readCode (std::string& rawInput, int* i);
 void setCommand (std::string* name, int code, struct definedCommand* command);
-
+void generateMachineCode (struct definedCommand* cmdList, struct userCommand* userProgram, int cmdAmount, int programLen);
 
 #endif //VCPU_COMPILER_H

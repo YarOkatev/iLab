@@ -26,7 +26,7 @@ std::string* fileRead (FILE* file) {
 	return readBuf;
 }
 
-struct userCommand* readUserProgram (FILE* programFile) {
+struct userCommand* readUserProgram (FILE* programFile, int* programLen) {
 	std::string& rawInput = *fileRead (programFile);
 	struct userCommand* userProgram = (struct userCommand*) calloc (PROGRAM_SIZE, sizeof (struct userCommand));
 	for (int i = 0, j = 0; i < rawInput.size(); i++) {
@@ -61,6 +61,7 @@ struct userCommand* readUserProgram (FILE* programFile) {
 			delete name_;
 			delete firstArg_;
 			delete secondArg_;
+			*programLen = j;
 			break;
 		}
 		userProgram[j].name = name_;
@@ -75,6 +76,7 @@ struct userCommand* readUserProgram (FILE* programFile) {
 
 		j++;
 	};
+
 	delete &rawInput;
 	return userProgram;
 }
@@ -93,12 +95,12 @@ void skipSpaces (std::string& str, int* i) {
 		*i += 1;
 }
 
-std::string* generateCommandList (FILE* config) {
+struct definedCommand* generateCommandList (FILE* config, int* cmdAmount) {
 	std::string& rawConfig = *fileRead (config);
 	struct definedCommand* cmdList = (struct definedCommand*) calloc (PROGRAM_SIZE, sizeof (struct definedCommand));
 	int code_ = 0;
-
-	for (int i = 0, j = 0; i < rawConfig.size (); i++) {
+	int j = 0;
+	for (int i = 0; i < rawConfig.size (); i++) {
 		std::string* name_ = new std::string {};
 
 		skipSpaces (rawConfig, &i);
@@ -117,9 +119,11 @@ std::string* generateCommandList (FILE* config) {
 		}
 		j++;
 	}
+
+	*cmdAmount = j + 1;
 	delete &rawConfig;
-	return nullptr;
-}
+	return cmdList;
+} //TODO realloc
 
 int readCode (std::string& rawInput, int* i) {
 	*i += 1;
@@ -153,3 +157,24 @@ void setCommand (std::string* name_, int code_, struct definedCommand* command) 
 	}
 }
 
+void generateMachineCode (struct definedCommand* cmdList, struct userCommand* userProgram, int cmdAmount, int programLen) {
+	std::string* machineCodeStr = new std::string {};
+	int j = 0;
+	std::string userCmd = "123";
+	std::string cmd;
+	//printf ("%d %d", cmdAmount, programLen);
+	for (int i = 0; i < programLen; i++) {
+		userCmd = (std::string) *((userProgram + i)->name);
+		for (; j < cmdAmount - 1; j++) {
+			cmd = (std::string) *((cmdList + j)->name);
+			std::cout << (userCmd == cmd);
+		}
+
+	}
+}
+
+
+//			 if (*userProgram[i].firstArg == "ax" || *userProgram[i].firstArg == "bx" ||
+//				*userProgram[i].firstArg == "cx" || *userProgram[i].firstArg == "dx") {
+//
+//			}
