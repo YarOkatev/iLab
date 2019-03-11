@@ -3,17 +3,18 @@ dump:1
 
 top:101
 push:103:153
-pop:104:154
+pop:104:051
 jmp:105
 je:106
 jne:107
 ja:108
 jb:109
-print:111:161
+print:110
+write:111
 
-add:201
-sub:202
-div:203
-mul:204
-cmp:205
-reg:206
+add:053
+sub:054
+div:055
+mul:056
+cmp:201:052
+reg:252

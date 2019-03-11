@@ -4,6 +4,12 @@
 
 #include "compiler.h"
 
+PrecompilationResult::PrecompilationResult (std::string* codeStr_, class Label* labelList_, int labelCount_):
+		codeStr (codeStr_),
+		labelList (labelList_),
+		labelCount (labelCount_)
+		{};
+
 size_t fileSize (FILE* file) {
 	size_t size = 0;
 	fseek (file, 0, SEEK_END);
@@ -26,35 +32,30 @@ std::string* fileRead (FILE* file) {
 	return readBuf;
 }
 
-struct userCommand* readUserProgram (FILE* programFile, int* programLen) {
+struct UserCommand* readUserProgram (FILE* programFile, int* programLen) {
 	std::string& rawInput = *fileRead (programFile);
 
 	std::string name_ = {};
 	std::string firstArg_ = {};
 	std::string secondArg_ = {};
 
-	auto userProgram = new class userCommand [PROGRAM_SIZE] {};
-	//auto userProgram = (class userCommand*) calloc (PROGRAM_SIZE, sizeof (class userCommand));
+	auto userProgram = new class UserCommand [PROGRAM_SIZE] {};
+	//auto userProgram = (class UserCommand*) calloc (PROGRAM_SIZE, sizeof (class UserCommand));
 	int j = 0;
-	for (int i = 0; i < rawInput.size(); i++, j++) {
+	for (int i = 0; i < rawInput.size(); j++) {
 		skipSpaces (rawInput, &i);
-		if (rawInput[i] == ':') { //tags
-			skipSpaces (rawInput, &i);
-			name_ += ':';
-			i++;
-			assignString (&name_, rawInput, &i);
-		} else {
-			assignString (&name_, rawInput, &i); //functions
-		}
+		assignString (&name_, rawInput, &i); //command
 		if (isspace (rawInput[i]) && rawInput[i] != '\n') {
 			skipSpaces (rawInput, &i);
 			assignString (&firstArg_, rawInput, &i);
 		}
+		skipSpaces (rawInput, &i);
 		if (rawInput[i] == ',') {
 			i++;
 			skipSpaces (rawInput, &i);
 			assignString (&secondArg_, rawInput, &i);
 		}
+		skipSpaces (rawInput, &i);
 		if (rawInput[i] == ';') {
 			while (rawInput[i] != '\n')
 				i++;
@@ -67,9 +68,9 @@ struct userCommand* readUserProgram (FILE* programFile, int* programLen) {
 		userProgram[j].firstArg = firstArg_;
 		userProgram[j].secondArg = secondArg_;
 
-		name_.erase ();
-		firstArg_.erase ();
-		secondArg_.erase ();
+		name_.clear ();
+		firstArg_.clear ();
+		secondArg_.clear ();
 	};
 
 	*programLen = j;
@@ -80,7 +81,8 @@ struct userCommand* readUserProgram (FILE* programFile, int* programLen) {
 //TODO realloc
 
 void assignString (std::string* name_, std::string& rawInput, int* i) {
-	while (isalnum (rawInput[*i])) {
+	while (isalnum (rawInput[*i]) || (ispunct (rawInput[*i]) &&
+			rawInput[*i] != ',' && rawInput[*i] != ';')) {
 		*name_ += rawInput[*i];
 		*i += 1;
 	}
@@ -91,10 +93,10 @@ void skipSpaces (std::string& str, int* i) {
 		*i += 1;
 }
 
-class definedCommand* generateCommandList (FILE* config, int* cmdAmount) {
+class DefinedCommand* readCommandList (FILE* config, int* cmdAmount) {
 	std::string& rawConfig = *fileRead (config);
 
-	auto cmdList = new class definedCommand [PROGRAM_SIZE] {};
+	auto cmdList = new class DefinedCommand [PROGRAM_SIZE] {};
 	int code_ = 0;
 	int j = 0;
 	std::string name_ = {};
@@ -115,7 +117,7 @@ class definedCommand* generateCommandList (FILE* config, int* cmdAmount) {
 			setCommand (name_, code_, &(cmdList[j]));
 		}
 
-		name_.erase ();
+		name_.clear ();
 	}
 
 	*cmdAmount = j;
@@ -134,7 +136,7 @@ int readCode (std::string& rawInput, int* i) {
 	return code;
 }
 
-void setCommand (std::string name_, int code_, class definedCommand* command) {
+void setCommand (std::string name_, int code_, class DefinedCommand* command) {
 	command->name = name_;
 	command->code = code_;
 	if (code_ < 100) {
@@ -155,33 +157,73 @@ void setCommand (std::string name_, int code_, class definedCommand* command) {
 	}
 }
 
-void generateMachineCode (class definedCommand* cmdList, struct userCommand* userProgram, int cmdAmount, int programLen) {
-	std::string* machineCodeStr = new std::string {};
-	int j = 0;
-	int errorNum = 0;
+class PrecompilationResult* precompilationCode (class DefinedCommand* cmdList, struct UserCommand* userProgram,
+												int cmdAmount, int programLen) {
+	auto codeStr = new std::string {};
+	auto labelList = new class Label [PROGRAM_SIZE] {}; //TODO айайай
+	int cmdNum = 0;
+	int errorCount = 0;
+	int labelCount = 0;
 
 	for (int i = 0; i < programLen; i++) {
-		j = 0;
-		for (; j < cmdAmount; j++) {
-			if (userProgram[i].name == cmdList[j].name || userProgram[i].name[0] == ':') {
-				break;
-			}
+		if (userProgram[i].name[0] == ':') { // проверка на метки
+			labelList[labelCount].name = userProgram[i].name;
+			*codeStr += userProgram[i].name + ' ';
+			labelCount++;
+			continue;
 		}
-		if (j == cmdAmount) {
-			printf ("Command %s in line %d is not defined \n", userProgram[i].name.data (), i + 1);
-			printf ("        ^\n");
-			errorNum++;
+		if (userProgram[i].name == "je" || userProgram[i].name == "jmp" || userProgram[i].name == "jne" ||
+			userProgram[i].name == "ja" || userProgram[i].name == "jb") { // обработка jump отдельно
+			*codeStr += userProgram[i].name + ' ';
+			*codeStr += userProgram[i].firstArg + ' ';
+			continue;
+		}
+
+		cmdNum = searchCommand (userProgram[i], programLen, cmdList, cmdAmount, i);
+
+		if (cmdNum < 0) {
+			errorCount++;
 		} else {
-			if (userProgram[i].firstArg == "ax" || userProgram[i].firstArg == "bx" ||
-				userProgram[i].firstArg == "cx" || userProgram[i].firstArg == "dx" ||
-				isDigit (userProgram[i].firstArg)) {
-				// do
-			} else {
-
+			*codeStr += std::to_string (cmdList[cmdNum].code) + ' ';
+			if (cmdList[cmdNum].argOne == 0) {
+				if (setRegister (codeStr, userProgram[i].firstArg, userProgram[i], i))
+					errorCount++;
+			} else if (cmdList[cmdNum].argOne == 1) {
+				*codeStr += userProgram[i].firstArg + ' ';
+			}
+			if (cmdList[cmdNum].argTwo == 0) {
+				if (setRegister (codeStr, userProgram[i].secondArg, userProgram[i], i))
+					errorCount++;
+			} else if (cmdList[cmdNum].argTwo == 1) {
+				*codeStr += userProgram[i].secondArg + ' ';
 			}
 		}
-
 	}
+
+	auto ret = new class PrecompilationResult (codeStr, labelList, labelCount);
+	std::cout << "CODE: " << *ret->codeStr;
+	return ret;
+}
+
+bool setRegister (std::string* machineCodeStr, std::string argument, class UserCommand userProgram, int line) {
+	if (argument == "ax") {
+		*machineCodeStr += "1 ";
+	} else if (argument == "bx") {
+		*machineCodeStr += "2 ";
+	} else if (argument == "cx") {
+		*machineCodeStr += "3 ";
+	} else if (argument == "dx") {
+		*machineCodeStr += "4 ";
+	} else {
+		std::string errorMsg = userProgram.name + ' ' + userProgram.firstArg;
+		if (!userProgram.secondArg.empty ())
+			errorMsg += ", " + userProgram.secondArg;
+		printf ("Line %d: no matching register for \"%s\"\n", line + 1, argument.data ());
+		printf ("%s\n", errorMsg.data ());
+		printf ("    ^^^^\n\n");
+		return false;
+	}
+	return true;
 }
 
 bool isDigit (std::string str) {
@@ -193,3 +235,40 @@ bool isDigit (std::string str) {
 	return false;
 }
 
+int searchCommand (class UserCommand userProgram, int programLen, class DefinedCommand* cmdList, int cmdAmount, int line) {
+	int j = 0;
+	int firstArg = 0, secondArg = 0;
+
+	if (userProgram.firstArg.empty ()) {
+		firstArg = -1;
+	} else if (isDigit (userProgram.firstArg)) {
+		firstArg = 1;
+	} else {
+		firstArg = 0;
+	}
+	if (userProgram.secondArg.empty ()) {
+		secondArg = -1;
+	} else if (isDigit (userProgram.secondArg)) {
+		secondArg = 1;
+	} else {
+		secondArg = 0;
+	}
+
+	for (; j < cmdAmount; j++) { // поиск команды в списке определенных
+		if (userProgram.name == cmdList[j].name && cmdList[j].argOne == firstArg && cmdList[j].argTwo == secondArg) {
+			break;
+		}
+	}
+
+	if (j == cmdAmount) { // проверка, что команда найдена
+		std::string errorMsg = userProgram.name + ' ' + userProgram.firstArg;
+		if (!userProgram.secondArg.empty ())
+			errorMsg += ", " + userProgram.secondArg;
+		printf ("Line %d: no matching command for \n", line + 1);
+		printf ("%s\n", errorMsg.data ());
+		printf ("^^^^\n\n");
+		return -1;
+	}
+
+	return j;
+}
