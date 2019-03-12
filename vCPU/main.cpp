@@ -10,5 +10,5 @@ int main () {
 	FILE* g = fopen ("cmdlist.txt", "r");
 	class DefinedCommand* cl = readCommandList (g, &b);
 	class UserCommand* uc = readUserProgram (f, &a);
-	precompilationCode (cl, uc, b, a);
+	compilationCode (cl, uc, b, a);
 }

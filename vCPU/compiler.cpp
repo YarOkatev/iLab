@@ -4,18 +4,12 @@
 
 #include "compiler.h"
 
-PrecompilationResult::PrecompilationResult (std::string* codeStr_, class Label* labelList_, int labelCount_):
-		codeStr (codeStr_),
-		labelList (labelList_),
-		labelCount (labelCount_)
-		{};
-
 size_t fileSize (FILE* file) {
 	size_t size = 0;
 	fseek (file, 0, SEEK_END);
 	size = (size_t)ftell (file);
 	if (size == 0) {
-		printf ("File is empty\n");
+		std::cout << "File is empty\n";
 		exit (1);
 	}
 	fseek (file, 0, SEEK_SET);
@@ -107,11 +101,11 @@ class DefinedCommand* readCommandList (FILE* config, int* cmdAmount) {
 			name_ += rawConfig[i];
 			i++;
 		}
-		code_ = readCode (rawConfig, &i); // read code
+		code_ = readCommandCode (rawConfig, &i); // read code
 		if (rawConfig[i] == ':') { // if two codes
 			setCommand (name_, code_, &(cmdList[j]));
 			j++;
-			code_ = readCode (rawConfig, &i);
+			code_ = readCommandCode (rawConfig, &i);
 			setCommand (name_, code_, &(cmdList[j]));
 		} else {
 			setCommand (name_, code_, &(cmdList[j]));
@@ -125,7 +119,7 @@ class DefinedCommand* readCommandList (FILE* config, int* cmdAmount) {
 	return cmdList;
 } //TODO realloc
 
-int readCode (std::string& rawInput, int* i) {
+int readCommandCode (std::string &rawInput, int* i) {
 	*i += 1;
 	std::string codeString;
 	while (isdigit (rawInput[*i])) {
@@ -157,9 +151,8 @@ void setCommand (std::string name_, int code_, class DefinedCommand* command) {
 	}
 }
 
-class PrecompilationResult* precompilationCode (class DefinedCommand* cmdList, struct UserCommand* userProgram,
-												int cmdAmount, int programLen) {
-	auto codeStr = new std::string {};
+void compilationCode (class DefinedCommand* cmdList, struct UserCommand* userProgram, int cmdAmount, int programLen) {
+	auto machineCode = new std::string {};
 	auto labelList = new class Label [PROGRAM_SIZE] {}; //TODO айайай
 	int cmdNum = 0;
 	int errorCount = 0;
@@ -168,14 +161,8 @@ class PrecompilationResult* precompilationCode (class DefinedCommand* cmdList, s
 	for (int i = 0; i < programLen; i++) {
 		if (userProgram[i].name[0] == ':') { // проверка на метки
 			labelList[labelCount].name = userProgram[i].name;
-			*codeStr += userProgram[i].name + ' ';
+			*machineCode += userProgram[i].name + ' ';
 			labelCount++;
-			continue;
-		}
-		if (userProgram[i].name == "je" || userProgram[i].name == "jmp" || userProgram[i].name == "jne" ||
-			userProgram[i].name == "ja" || userProgram[i].name == "jb") { // обработка jump отдельно
-			*codeStr += userProgram[i].name + ' ';
-			*codeStr += userProgram[i].firstArg + ' ';
 			continue;
 		}
 
@@ -184,25 +171,35 @@ class PrecompilationResult* precompilationCode (class DefinedCommand* cmdList, s
 		if (cmdNum < 0) {
 			errorCount++;
 		} else {
-			*codeStr += std::to_string (cmdList[cmdNum].code) + ' ';
+			*machineCode += std::to_string (cmdList[cmdNum].code) + ' ';
+			if (userProgram[i].name == "je" || userProgram[i].name == "jmp" || userProgram[i].name == "jne" ||
+				userProgram[i].name == "ja" || userProgram[i].name == "jb") { // обработка jump отдельно
+				*machineCode += userProgram[i].firstArg + ' ';
+				continue;
+			}
 			if (cmdList[cmdNum].argOne == 0) {
-				if (setRegister (codeStr, userProgram[i].firstArg, userProgram[i], i))
+				if (setRegister (machineCode, userProgram[i].firstArg, userProgram[i], i))
 					errorCount++;
 			} else if (cmdList[cmdNum].argOne == 1) {
-				*codeStr += userProgram[i].firstArg + ' ';
+				*machineCode += userProgram[i].firstArg + ' ';
 			}
 			if (cmdList[cmdNum].argTwo == 0) {
-				if (setRegister (codeStr, userProgram[i].secondArg, userProgram[i], i))
+				if (setRegister (machineCode, userProgram[i].secondArg, userProgram[i], i))
 					errorCount++;
 			} else if (cmdList[cmdNum].argTwo == 1) {
-				*codeStr += userProgram[i].secondArg + ' ';
+				*machineCode += userProgram[i].secondArg + ' ';
 			}
 		}
 	}
 
-	auto ret = new class PrecompilationResult (codeStr, labelList, labelCount);
-	std::cout << "CODE: " << *ret->codeStr;
-	return ret;
+	errorCount += labelAnalysis (*machineCode, labelList, labelCount);
+	if (errorCount == 0) {
+		std::cout << "Compilation successful\n";
+	} else {
+		std::cout << "Compilation unsuccessful. " << errorCount << " errors generated\n";
+	}
+
+	std::cout << "\nCODE: " << *machineCode << '\n';
 }
 
 bool setRegister (std::string* machineCodeStr, std::string argument, class UserCommand userProgram, int line) {
@@ -218,12 +215,12 @@ bool setRegister (std::string* machineCodeStr, std::string argument, class UserC
 		std::string errorMsg = userProgram.name + ' ' + userProgram.firstArg;
 		if (!userProgram.secondArg.empty ())
 			errorMsg += ", " + userProgram.secondArg;
-		printf ("Line %d: no matching register for \"%s\"\n", line + 1, argument.data ());
-		printf ("%s\n", errorMsg.data ());
-		printf ("    ^^^^\n\n");
-		return false;
+		std::cout << "Line " << line + 1 << ": no matching register for \"" << argument << "\"\n";
+		std::cout << errorMsg << '\n';
+		std::cout << "    ^^^^\n\n";
+		return true;
 	}
-	return true;
+	return false;
 }
 
 bool isDigit (std::string str) {
@@ -235,7 +232,8 @@ bool isDigit (std::string str) {
 	return false;
 }
 
-int searchCommand (class UserCommand userProgram, int programLen, class DefinedCommand* cmdList, int cmdAmount, int line) {
+int searchCommand (class UserCommand userProgram, int programLen,
+					class DefinedCommand* cmdList, int cmdAmount, int line) {
 	int j = 0;
 	int firstArg = 0, secondArg = 0;
 
@@ -264,11 +262,65 @@ int searchCommand (class UserCommand userProgram, int programLen, class DefinedC
 		std::string errorMsg = userProgram.name + ' ' + userProgram.firstArg;
 		if (!userProgram.secondArg.empty ())
 			errorMsg += ", " + userProgram.secondArg;
-		printf ("Line %d: no matching command for \n", line + 1);
-		printf ("%s\n", errorMsg.data ());
-		printf ("^^^^\n\n");
+		std::cout << "Line " << line + 1 << ": no matching command for \n";
+		std::cout << errorMsg << '\n';
+		std::cout << "^^^^\n\n";
 		return -1;
 	}
 
 	return j;
+}
+
+int labelAnalysis (std::string &codeStr, class Label* labelList, int labelCount) {
+	std::string currentLabel {};
+	int k = 0, j = 0;
+	int addrCount = 0;
+	int errorCount = 0;
+	for (int i = 0; i < codeStr.size (); i++) {
+		if (codeStr[i] == ':') {
+			currentLabel.clear ();
+			k = i; j = 0;
+			while (codeStr[k] != ' ') {
+				currentLabel += codeStr[k];
+				k++;
+			}
+			codeStr.erase (i, currentLabel.size() + 1);
+			for ( ; j < labelCount; j++) {
+				if (labelList[j].name == currentLabel)
+					if (labelList[j].address != 0) {
+						std::cout << "Label \"" << labelList[j].name.data () + 1 << "\" declared twice\n\n";
+						errorCount++;
+					} else {
+						labelList[j].address = addrCount;
+					}
+			}
+		}
+		if (codeStr[i] == ' ')
+			addrCount++;
+	}
+
+	for (int i = 0; i < codeStr.size (); i++) {
+		if (isalpha (codeStr[i])) {
+			currentLabel.clear ();
+			currentLabel += ':';
+			k = i; j = 0;
+			while (codeStr[k] != ' ') {
+				currentLabel += codeStr[k];
+				k++;
+			}
+			codeStr.erase (i, currentLabel.size() - 1);
+			for ( ; j < labelCount; j++) {
+				if (labelList[j].name == currentLabel) {
+					codeStr.insert (i, std::to_string (labelList[j].address));
+					break;
+				}
+			}
+			if (j == labelCount) {
+				std::cout << "Label \"" << currentLabel << "\" does not exist\n\n";
+				errorCount++;
+			}
+		}
+	}
+
+	return errorCount;
 }
