@@ -21,22 +21,22 @@ std::string* fileRead (FILE* file) {
 	size_t size = fileSize (file);
 	std::string* readBuf = new std::string {};
 	readBuf->resize (size + 1);
-	fread (readBuf->data(), sizeof (char), size, file);
+	fread (readBuf->data (), sizeof (char), size, file);
 	fclose (file);
 	return readBuf;
 }
 
 struct UserCommand* readUserProgram (FILE* programFile, int* programLen) {
-	std::string& rawInput = *fileRead (programFile);
+	std::string &rawInput = *fileRead (programFile);
 
 	std::string name_ = {};
 	std::string firstArg_ = {};
 	std::string secondArg_ = {};
 
-	auto userProgram = new class UserCommand [PROGRAM_SIZE] {};
+	auto userProgram = new class UserCommand[PROGRAM_SIZE] {};
 	//auto userProgram = (class UserCommand*) calloc (PROGRAM_SIZE, sizeof (class UserCommand));
 	int j = 0;
-	for (int i = 0; i < rawInput.size(); j++) {
+	for (int i = 0; i < rawInput.size (); j++) {
 		skipSpaces (rawInput, &i);
 		assignString (&name_, rawInput, &i); //command
 		if (isspace (rawInput[i]) && rawInput[i] != '\n') {
@@ -55,7 +55,7 @@ struct UserCommand* readUserProgram (FILE* programFile, int* programLen) {
 				i++;
 		}
 
-		if (name_.empty())
+		if (name_.empty ())
 			break;
 
 		userProgram[j].name = name_;
@@ -74,23 +74,22 @@ struct UserCommand* readUserProgram (FILE* programFile, int* programLen) {
 
 //TODO realloc
 
-void assignString (std::string* name_, std::string& rawInput, int* i) {
-	while (isalnum (rawInput[*i]) || (ispunct (rawInput[*i]) &&
-			rawInput[*i] != ',' && rawInput[*i] != ';')) {
+void assignString (std::string* name_, std::string &rawInput, int* i) {
+	while (isalnum (rawInput[*i]) || (ispunct (rawInput[*i]) && rawInput[*i] != ',' && rawInput[*i] != ';')) {
 		*name_ += rawInput[*i];
 		*i += 1;
 	}
 }
 
-void skipSpaces (std::string& str, int* i) {
+void skipSpaces (std::string &str, int* i) {
 	while (isspace (str[*i]))
 		*i += 1;
 }
 
 class DefinedCommand* readCommandList (FILE* config, int* cmdAmount) {
-	std::string& rawConfig = *fileRead (config);
+	std::string &rawConfig = *fileRead (config);
 
-	auto cmdList = new class DefinedCommand [PROGRAM_SIZE] {};
+	auto cmdList = new class DefinedCommand[PROGRAM_SIZE] {};
 	int code_ = 0;
 	int j = 0;
 	std::string name_ = {};
@@ -153,7 +152,7 @@ void setCommand (std::string name_, int code_, class DefinedCommand* command) {
 
 void compilationCode (class DefinedCommand* cmdList, struct UserCommand* userProgram, int cmdAmount, int programLen) {
 	auto machineCode = new std::string {};
-	auto labelList = new class Label [PROGRAM_SIZE] {}; //TODO айайай
+	auto labelList = new class Label[PROGRAM_SIZE] {}; //TODO айайай
 	int cmdNum = 0;
 	int errorCount = 0;
 	int labelCount = 0;
@@ -192,14 +191,20 @@ void compilationCode (class DefinedCommand* cmdList, struct UserCommand* userPro
 		}
 	}
 
+	delete[] userProgram;
+	delete[] cmdList;
+	delete[] labelList;
+
 	errorCount += labelAnalysis (*machineCode, labelList, labelCount);
 	if (errorCount == 0) {
 		std::cout << "Compilation successful\n";
+		FILE* exeFile = fopen ("a.exf", "w");
+		fwrite (machineCode->data (), sizeof(char), machineCode->size (), exeFile);
+		fclose (exeFile);
+		return;
 	} else {
 		std::cout << "Compilation unsuccessful. " << errorCount << " errors generated\n";
 	}
-
-	std::cout << "\nCODE: " << *machineCode << '\n';
 }
 
 bool setRegister (std::string* machineCodeStr, std::string argument, class UserCommand userProgram, int line) {
@@ -232,8 +237,7 @@ bool isDigit (std::string str) {
 	return false;
 }
 
-int searchCommand (class UserCommand userProgram, int programLen,
-					class DefinedCommand* cmdList, int cmdAmount, int line) {
+int searchCommand (class UserCommand userProgram, int programLen, class DefinedCommand* cmdList, int cmdAmount, int line) {
 	int j = 0;
 	int firstArg = 0, secondArg = 0;
 
@@ -284,8 +288,8 @@ int labelAnalysis (std::string &codeStr, class Label* labelList, int labelCount)
 				currentLabel += codeStr[k];
 				k++;
 			}
-			codeStr.erase (i, currentLabel.size() + 1);
-			for ( ; j < labelCount; j++) {
+			codeStr.erase (i, currentLabel.size () + 1);
+			for (; j < labelCount; j++) {
 				if (labelList[j].name == currentLabel)
 					if (labelList[j].address != 0) {
 						std::cout << "Label \"" << labelList[j].name.data () + 1 << "\" declared twice\n\n";
@@ -308,8 +312,8 @@ int labelAnalysis (std::string &codeStr, class Label* labelList, int labelCount)
 				currentLabel += codeStr[k];
 				k++;
 			}
-			codeStr.erase (i, currentLabel.size() - 1);
-			for ( ; j < labelCount; j++) {
+			codeStr.erase (i, currentLabel.size () - 1);
+			for (; j < labelCount; j++) {
 				if (labelList[j].name == currentLabel) {
 					codeStr.insert (i, std::to_string (labelList[j].address));
 					break;
