@@ -33,7 +33,10 @@ struct UserCommand* readUserProgram (FILE* programFile, int* programLen) {
 	std::string firstArg_ = {};
 	std::string secondArg_ = {};
 
-	auto userProgram = new class UserCommand[PROGRAM_SIZE] {};
+	//std::vector<class UserCommand> userProgram(PROGRAM_SIZE);
+
+	auto userProgram = new UserCommand [PROGRAM_SIZE] {};
+
 	//auto userProgram = (class UserCommand*) calloc (PROGRAM_SIZE, sizeof (class UserCommand));
 	int j = 0;
 	for (int i = 0; i < rawInput.size (); j++) {
@@ -57,6 +60,9 @@ struct UserCommand* readUserProgram (FILE* programFile, int* programLen) {
 
 		if (name_.empty ())
 			break;
+
+//		if (j > userProgram.capacity ())
+//			userProgram.resize (userProgram.capacity () * 1.5);
 
 		userProgram[j].name = name_;
 		userProgram[j].firstArg = firstArg_;
@@ -86,10 +92,10 @@ void skipSpaces (std::string &str, int* i) {
 		*i += 1;
 }
 
-class DefinedCommand* readCommandList (FILE* config, int* cmdAmount) {
+DefinedCommand* readCommandList (FILE* config, int* cmdAmount) {
 	std::string &rawConfig = *fileRead (config);
 
-	auto cmdList = new class DefinedCommand[PROGRAM_SIZE] {};
+	auto cmdList = new DefinedCommand[PROGRAM_SIZE] {};
 	int code_ = 0;
 	int j = 0;
 	std::string name_ = {};
@@ -129,7 +135,7 @@ int readCommandCode (std::string &rawInput, int* i) {
 	return code;
 }
 
-void setCommand (std::string name_, int code_, class DefinedCommand* command) {
+void setCommand (std::string name_, int code_, DefinedCommand* command) {
 	command->name = name_;
 	command->code = code_;
 	if (code_ < 100) {
@@ -150,9 +156,10 @@ void setCommand (std::string name_, int code_, class DefinedCommand* command) {
 	}
 }
 
-void compilationCode (class DefinedCommand* cmdList, struct UserCommand* userProgram, int cmdAmount, int programLen) {
+void generateMachineCode (DefinedCommand* cmdList, struct UserCommand* userProgram, int cmdAmount, int programLen,
+						  std::string exeName) {
 	auto machineCode = new std::string {};
-	auto labelList = new class Label[PROGRAM_SIZE] {}; //TODO айайай
+	auto labelList = new Label[PROGRAM_SIZE] {}; //TODO айайай
 	int cmdNum = 0;
 	int errorCount = 0;
 	int labelCount = 0;
@@ -198,24 +205,25 @@ void compilationCode (class DefinedCommand* cmdList, struct UserCommand* userPro
 	errorCount += labelAnalysis (*machineCode, labelList, labelCount);
 	if (errorCount == 0) {
 		std::cout << "Compilation successful\n";
-		FILE* exeFile = fopen ("a.exf", "w");
+		FILE* exeFile = fopen (exeName.data (), "w");
 		fwrite (machineCode->data (), sizeof(char), machineCode->size (), exeFile);
 		fclose (exeFile);
 		return;
 	} else {
 		std::cout << "Compilation unsuccessful. " << errorCount << " errors generated\n";
+		exit (1);
 	}
 }
 
-bool setRegister (std::string* machineCodeStr, std::string argument, class UserCommand userProgram, int line) {
+bool setRegister (std::string* machineCodeStr, std::string argument, UserCommand userProgram, int line) {
 	if (argument == "ax") {
-		*machineCodeStr += "1 ";
+		*machineCodeStr += "0 ";
 	} else if (argument == "bx") {
-		*machineCodeStr += "2 ";
+		*machineCodeStr += "1 ";
 	} else if (argument == "cx") {
-		*machineCodeStr += "3 ";
+		*machineCodeStr += "2 ";
 	} else if (argument == "dx") {
-		*machineCodeStr += "4 ";
+		*machineCodeStr += "3 ";
 	} else {
 		std::string errorMsg = userProgram.name + ' ' + userProgram.firstArg;
 		if (!userProgram.secondArg.empty ())
@@ -230,14 +238,14 @@ bool setRegister (std::string* machineCodeStr, std::string argument, class UserC
 
 bool isDigit (std::string str) {
 	int i = 0;
-	while (isdigit (str[i]))
+	while (isdigit (str[i]) || str[i] == '-')
 		i++;
 	if (i == str.size ())
 		return true;
 	return false;
 }
 
-int searchCommand (class UserCommand userProgram, int programLen, class DefinedCommand* cmdList, int cmdAmount, int line) {
+int searchCommand (UserCommand userProgram, int programLen, DefinedCommand* cmdList, int cmdAmount, int line) {
 	int j = 0;
 	int firstArg = 0, secondArg = 0;
 
@@ -275,7 +283,7 @@ int searchCommand (class UserCommand userProgram, int programLen, class DefinedC
 	return j;
 }
 
-int labelAnalysis (std::string &codeStr, class Label* labelList, int labelCount) {
+int labelAnalysis (std::string &codeStr, Label* labelList, int labelCount) {
 	std::string currentLabel {};
 	int k = 0, j = 0;
 	int addrCount = 0;
@@ -290,13 +298,14 @@ int labelAnalysis (std::string &codeStr, class Label* labelList, int labelCount)
 			}
 			codeStr.erase (i, currentLabel.size () + 1);
 			for (; j < labelCount; j++) {
-				if (labelList[j].name == currentLabel)
+				if (labelList[j].name == currentLabel) {
 					if (labelList[j].address != 0) {
 						std::cout << "Label \"" << labelList[j].name.data () + 1 << "\" declared twice\n\n";
 						errorCount++;
 					} else {
 						labelList[j].address = addrCount;
 					}
+				}
 			}
 		}
 		if (codeStr[i] == ' ')
@@ -327,4 +336,13 @@ int labelAnalysis (std::string &codeStr, class Label* labelList, int labelCount)
 	}
 
 	return errorCount;
+}
+
+void compilation (std::string program, std::string config, std::string exeName) {
+	FILE* programFile = fopen (program.data (), "r");
+	FILE* configFile = fopen (config.data (), "r");
+	int cmdAmount = 0, programLen = 0;
+	DefinedCommand* cmdList = readCommandList (configFile, &cmdAmount);
+	UserCommand* userProgram = readUserProgram (programFile, &programLen);
+	generateMachineCode (cmdList, userProgram, cmdAmount, programLen, exeName);
 }

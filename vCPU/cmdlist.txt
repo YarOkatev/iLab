@@ -2,7 +2,7 @@ halt:0
 dump:1
 
 top:101
-push:103:153
+push:103:151
 pop:104:051
 jmp:105
 je:106

@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+#include <vector>
 
 #ifndef VCPU_COMPILER_H
 #define VCPU_COMPILER_H
@@ -36,16 +37,18 @@ public:
 
 size_t fileSize (FILE* file);
 std::string* fileRead (FILE* file);
-class UserCommand* readUserProgram (FILE* programFile, int* programLen);
+UserCommand* readUserProgram (FILE* programFile, int* programLen);
 void skipSpaces (std::string& str, int* i);
 void assignString (std::string* name_, std::string& rawInput, int* i);
-class DefinedCommand* readCommandList (FILE* config, int* cmdAmount);
+DefinedCommand* readCommandList (FILE* config, int* cmdAmount);
 int readCommandCode (std::string &rawInput, int* i);
-void setCommand (std::string name, int code, class DefinedCommand* command);
-void compilationCode (class DefinedCommand* cmdList, class UserCommand* userProgram, int cmdAmount, int programLen);
+void setCommand (std::string name, int code, DefinedCommand* command);
+void generateMachineCode (DefinedCommand* cmdList, struct UserCommand* userProgram, int cmdAmount, int programLen,
+						  std::string exeName);
 bool isDigit (std::string str);
-int searchCommand (class UserCommand userProgram, int programLen, class DefinedCommand* cmdList, int cmdAmount, int line);
-bool setRegister (std::string* machineCodeStr, std::string argument, class UserCommand userProgram, int line);
+int searchCommand (class UserCommand userProgram, int programLen, DefinedCommand* cmdList, int cmdAmount, int line);
+bool setRegister (std::string* machineCodeStr, std::string argument, UserCommand userProgram, int line);
 int labelAnalysis (std::string &codeStr, class Label* labelList, int labelCount);
+void compilation (std::string program, std::string config, std::string exeName);
 
 #endif //VCPU_COMPILER_H
