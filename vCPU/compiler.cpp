@@ -205,6 +205,7 @@ void generateMachineCode (DefinedCommand* cmdList, struct UserCommand* userProgr
 	errorCount += labelAnalysis (*machineCode, labelList, labelCount);
 	if (errorCount == 0) {
 		std::cout << "Compilation successful\n";
+		exeName += ".vcpu";
 		FILE* exeFile = fopen (exeName.data (), "w");
 		fwrite (machineCode->data (), sizeof(char), machineCode->size (), exeFile);
 		fclose (exeFile);
@@ -338,11 +339,11 @@ int labelAnalysis (std::string &codeStr, Label* labelList, int labelCount) {
 	return errorCount;
 }
 
-void compilation (std::string program, std::string config, std::string exeName) {
-	FILE* programFile = fopen (program.data (), "r");
+void compilation (std::string programName, std::string config) {
+	FILE* programFile = fopen (programName.data (), "r");
 	FILE* configFile = fopen (config.data (), "r");
 	int cmdAmount = 0, programLen = 0;
 	DefinedCommand* cmdList = readCommandList (configFile, &cmdAmount);
 	UserCommand* userProgram = readUserProgram (programFile, &programLen);
-	generateMachineCode (cmdList, userProgram, cmdAmount, programLen, exeName);
+	generateMachineCode (cmdList, userProgram, cmdAmount, programLen, programName);
 }

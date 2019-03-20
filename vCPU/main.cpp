@@ -2,7 +2,7 @@
 #include "compiler.h"
 
 int main () {
-	std::string exeName = "a.vcpu";
-	compilation ("prog1", "cmdlist.txt", exeName);
-	startCPU (exeName);
+	std::string programName = "fib";
+	compilation (programName, "cmdlist.txt");
+	startCPU (programName);
 }

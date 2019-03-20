@@ -49,6 +49,6 @@ bool isDigit (std::string str);
 int searchCommand (class UserCommand userProgram, int programLen, DefinedCommand* cmdList, int cmdAmount, int line);
 bool setRegister (std::string* machineCodeStr, std::string argument, UserCommand userProgram, int line);
 int labelAnalysis (std::string &codeStr, class Label* labelList, int labelCount);
-void compilation (std::string program, std::string config, std::string exeName);
+void compilation (std::string programName, std::string config);
 
 #endif //VCPU_COMPILER_H

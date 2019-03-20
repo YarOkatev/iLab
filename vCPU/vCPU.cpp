@@ -238,6 +238,7 @@ void Processor::dump () {
 }
 
 void startCPU (std::string fileName) {
+	fileName += ".vcpu";
 	FILE* bootFile = fopen (fileName.data (), "r");
 	Processor myCpu (bootFile);
 	myCpu.tact ();

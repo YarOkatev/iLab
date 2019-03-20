@@ -1,6 +1,0 @@
-:metka1
-    push    5
-    cmh ds,    3
-    add ax, cx; govtosdad d
-:metka2
-top;
