@@ -4,61 +4,53 @@
 
 #include "compiler.h"
 
-size_t fileSize (FILE* file) {
-	size_t size = 0;
-	fseek (file, 0, SEEK_END);
-	size = (size_t)ftell (file);
-	if (size == 0) {
-		std::cout << "File is empty\n";
-		exit (1);
-	}
-	fseek (file, 0, SEEK_SET);
-	return size;
-}
+Compiler::Compiler (FILE* programFile_, FILE* configFile_):
+		programFile (programFile_),
+		configFile (configFile_),
+		programLen (0),
+		cmdAmount (0),
+		labelCount (0)
+{};
 
-std::string* fileRead (FILE* file) {
-	int i = 0;
+void Compiler::fileRead (FILE* file) {
 	if (!file) {
 		std::cout << "File opening error";
 		exit (1);
 	}
 	size_t size = fileSize (file);
-	std::string* readBuf = new std::string {};
-	readBuf->resize (size + 1);
-	fread (readBuf->data (), sizeof (char), size, file);
+	readBuffer.clear ();
+	readBuffer.resize (size + 1);
+	fread (readBuffer.data (), sizeof (char), size, file);
 	fclose (file);
-	return readBuf;
 }
 
-struct UserCommand* readUserProgram (FILE* programFile, int* programLen) {
-	std::string &rawInput = *fileRead (programFile);
+void Compiler::readUserProgram () {
+	fileRead (programFile);
 
-	std::string name_ = {};
-	std::string firstArg_ = {};
-	std::string secondArg_ = {};
+	std::string name_ {};
+	std::string firstArg_ {};
+	std::string secondArg_ {};
 
 	//std::vector<class UserCommand> userProgram(PROGRAM_SIZE);
 
-	auto userProgram = new UserCommand [PROGRAM_SIZE] {};
+	userProgram = new UserCommand [PROGRAM_SIZE] {};
 
-	//auto userProgram = (class UserCommand*) calloc (PROGRAM_SIZE, sizeof (class UserCommand));
-	int j = 0;
-	for (int i = 0; i < rawInput.size (); j++) {
-		skipSpaces (rawInput, &i);
-		assignString (&name_, rawInput, &i); //command
-		if (isspace (rawInput[i]) && rawInput[i] != '\n') {
-			skipSpaces (rawInput, &i);
-			assignString (&firstArg_, rawInput, &i);
+	for (int i = 0; i < readBuffer.size (); programLen++) {
+		skipSpaces (&i);
+		assignString (&name_, &i); //command
+		if (isspace (readBuffer[i]) && readBuffer[i] != '\n') {
+			skipSpaces (&i);
+			assignString (&firstArg_, &i);
 		}
-		skipSpaces (rawInput, &i);
-		if (rawInput[i] == ',') {
+		skipSpaces (&i);
+		if (readBuffer[i] == ',') {
 			i++;
-			skipSpaces (rawInput, &i);
-			assignString (&secondArg_, rawInput, &i);
+			skipSpaces (&i);
+			assignString (&secondArg_, &i);
 		}
-		skipSpaces (rawInput, &i);
-		if (rawInput[i] == ';') {
-			while (rawInput[i] != '\n')
+		skipSpaces (&i);
+		if (readBuffer[i] == ';') {
+			while (readBuffer[i] != '\n')
 				i++;
 		}
 
@@ -66,152 +58,136 @@ struct UserCommand* readUserProgram (FILE* programFile, int* programLen) {
 			break;
 
 //		if (j > userProgram.capacity ())
-//			userProgram.resize (userProgram.capacity () * 1.5);
+//			userProgram.reserve (userProgram.capacity () * 1.5);
 
-		userProgram[j].name = name_;
-		userProgram[j].firstArg = firstArg_;
-		userProgram[j].secondArg = secondArg_;
+		userProgram[programLen].name = name_;
+		userProgram[programLen].firstArg = firstArg_;
+		userProgram[programLen].secondArg = secondArg_;
 
 		name_.clear ();
 		firstArg_.clear ();
 		secondArg_.clear ();
 	};
+} //TODO realloc
 
-	*programLen = j;
-	delete &rawInput;
-	return userProgram;
-}
-
-//TODO realloc
-
-void assignString (std::string* name_, std::string &rawInput, int* i) {
-	while (isalnum (rawInput[*i]) || (ispunct (rawInput[*i]) && rawInput[*i] != ',' && rawInput[*i] != ';')) {
-		*name_ += rawInput[*i];
+void Compiler::assignString (std::string* name_, int* i) {
+	while (isalnum (readBuffer[*i]) || (ispunct (readBuffer[*i]) && readBuffer[*i] != ',' && readBuffer[*i] != ';')) {
+		*name_ += readBuffer[*i];
 		*i += 1;
 	}
 }
 
-void skipSpaces (std::string &str, int* i) {
-	while (isspace (str[*i]))
+void Compiler::skipSpaces (int* i) {
+	while (isspace (readBuffer[*i]))
 		*i += 1;
 }
 
-DefinedCommand* readCommandList (FILE* config, int* cmdAmount) {
-	std::string &rawConfig = *fileRead (config);
+void Compiler::readCommandList () {
+	fileRead (configFile);
 
-	auto cmdList = new DefinedCommand[PROGRAM_SIZE] {};
+	cmdList = new DefinedCommand[PROGRAM_SIZE] {};
 	int code_ = 0;
-	int j = 0;
-	std::string name_ = {};
+	std::string name_ {};
 
-	for (int i = 0; i < rawConfig.size (); i++, j++) {
-		skipSpaces (rawConfig, &i);
-		while (isalpha (rawConfig[i])) { // read name
-			name_ += rawConfig[i];
+	for (int i = 0; i < readBuffer.size (); i++, cmdAmount++) {
+		skipSpaces (&i);
+		while (isalpha (readBuffer[i])) { // read name
+			name_ += readBuffer[i];
 			i++;
 		}
-		code_ = readCommandCode (rawConfig, &i); // read code
-		if (rawConfig[i] == ':') { // if two codes
-			setCommand (name_, code_, &(cmdList[j]));
-			j++;
-			code_ = readCommandCode (rawConfig, &i);
-			setCommand (name_, code_, &(cmdList[j]));
+		code_ = readCommandCode (&i); // read code
+		if (readBuffer[i] == ':') { // if two codes
+			setCommand (name_, code_);
+			cmdAmount++;
+			code_ = readCommandCode (&i);
+			setCommand (name_, code_);
 		} else {
-			setCommand (name_, code_, &(cmdList[j]));
+			setCommand (name_, code_);
 		}
 
 		name_.clear ();
 	}
-
-	*cmdAmount = j;
-	delete &rawConfig;
-	return cmdList;
 } //TODO realloc
 
-int readCommandCode (std::string &rawInput, int* i) {
+int Compiler::readCommandCode (int* i) {
 	*i += 1;
-	std::string codeString;
-	while (isdigit (rawInput[*i])) {
-		codeString += rawInput[*i];
+	std::string codeString {};
+	while (isdigit (readBuffer[*i])) {
+		codeString += readBuffer[*i];
 		*i += 1;
 	}
 	int code = std::stoi (codeString);
 	return code;
 }
 
-void setCommand (std::string name_, int code_, DefinedCommand* command) {
-	command->name = name_;
-	command->code = code_;
+void Compiler::setCommand (std::string name_, int code_) {
+	cmdList[cmdAmount].name = name_;
+	cmdList[cmdAmount].code = code_;
 	if (code_ < 100) {
-		command->argOne = -1; // -1 no arg, 0 arg is reg, 1 arg is num
-		command->argTwo = -1;
+		cmdList[cmdAmount].argOne = -1; // -1 no arg, 0 arg is reg, 1 arg is num
+		cmdList[cmdAmount].argTwo = -1;
 	} else if (code_ > 100 && code_ < 150) {
-		command->argOne = 0;
-		command->argTwo = -1;
+		cmdList[cmdAmount].argOne = 0;
+		cmdList[cmdAmount].argTwo = -1;
 	} else if (code_ > 150 && code_ < 200) {
-		command->argOne = 1;
-		command->argTwo = -1;
+		cmdList[cmdAmount].argOne = 1;
+		cmdList[cmdAmount].argTwo = -1;
 	} else if (code_ > 200 && code_ < 250) {
-		command->argOne = 0;
-		command->argTwo = 0;
+		cmdList[cmdAmount].argOne = 0;
+		cmdList[cmdAmount].argTwo = 0;
 	} else {
-		command->argOne = 1;
-		command->argTwo = 0;
+		cmdList[cmdAmount].argOne = 1;
+		cmdList[cmdAmount].argTwo = 0;
 	}
 }
 
-void generateMachineCode (DefinedCommand* cmdList, struct UserCommand* userProgram, int cmdAmount, int programLen,
-						  std::string exeName) {
-	auto machineCode = new std::string {};
-	auto labelList = new Label[PROGRAM_SIZE] {}; //TODO айайай
+void Compiler::generateMachineCode (std::string exeName) {
+	std::string machineCode {};
 	int cmdNum = 0;
 	int errorCount = 0;
-	int labelCount = 0;
+
+	labelList = new Label[PROGRAM_SIZE] {}; //TODO айайай
 
 	for (int i = 0; i < programLen; i++) {
 		if (userProgram[i].name[0] == ':') { // проверка на метки
 			labelList[labelCount].name = userProgram[i].name;
-			*machineCode += userProgram[i].name + ' ';
+			machineCode += userProgram[i].name + ' ';
 			labelCount++;
 			continue;
 		}
 
-		cmdNum = searchCommand (userProgram[i], programLen, cmdList, cmdAmount, i);
+		cmdNum = searchCommand (i);
 
 		if (cmdNum < 0) {
 			errorCount++;
 		} else {
-			*machineCode += std::to_string (cmdList[cmdNum].code) + ' ';
+			machineCode += std::to_string (cmdList[cmdNum].code) + ' ';
 			if (userProgram[i].name == "je" || userProgram[i].name == "jmp" || userProgram[i].name == "jne" ||
 				userProgram[i].name == "ja" || userProgram[i].name == "jb") { // обработка jump отдельно
-				*machineCode += userProgram[i].firstArg + ' ';
+				machineCode += userProgram[i].firstArg + ' ';
 				continue;
 			}
 			if (cmdList[cmdNum].argOne == 0) {
-				if (setRegister (machineCode, userProgram[i].firstArg, userProgram[i], i))
+				if (setRegister (&machineCode, userProgram[i].firstArg, i))
 					errorCount++;
 			} else if (cmdList[cmdNum].argOne == 1) {
-				*machineCode += userProgram[i].firstArg + ' ';
+				machineCode += userProgram[i].firstArg + ' ';
 			}
 			if (cmdList[cmdNum].argTwo == 0) {
-				if (setRegister (machineCode, userProgram[i].secondArg, userProgram[i], i))
+				if (setRegister (&machineCode, userProgram[i].secondArg, i))
 					errorCount++;
 			} else if (cmdList[cmdNum].argTwo == 1) {
-				*machineCode += userProgram[i].secondArg + ' ';
+				machineCode += userProgram[i].secondArg + ' ';
 			}
 		}
 	}
 
-	delete[] userProgram;
-	delete[] cmdList;
-	delete[] labelList;
-
-	errorCount += labelAnalysis (*machineCode, labelList, labelCount);
+	errorCount += labelAnalysis (machineCode);
 	if (errorCount == 0) {
 		std::cout << "Compilation successful\n";
 		exeName += ".vcpu";
 		FILE* exeFile = fopen (exeName.data (), "w");
-		fwrite (machineCode->data (), sizeof(char), machineCode->size (), exeFile);
+		fwrite (machineCode.data (), sizeof(char), machineCode.size (), exeFile);
 		fclose (exeFile);
 		return;
 	} else {
@@ -220,7 +196,7 @@ void generateMachineCode (DefinedCommand* cmdList, struct UserCommand* userProgr
 	}
 }
 
-bool setRegister (std::string* machineCodeStr, std::string argument, UserCommand userProgram, int line) {
+bool Compiler::setRegister (std::string* machineCodeStr, std::string argument, int line) {
 	if (argument == "ax") {
 		*machineCodeStr += "0 ";
 	} else if (argument == "bx") {
@@ -230,9 +206,9 @@ bool setRegister (std::string* machineCodeStr, std::string argument, UserCommand
 	} else if (argument == "dx") {
 		*machineCodeStr += "3 ";
 	} else {
-		std::string errorMsg = userProgram.name + ' ' + userProgram.firstArg;
-		if (!userProgram.secondArg.empty ())
-			errorMsg += ", " + userProgram.secondArg;
+		std::string errorMsg = userProgram[line].name + ' ' + userProgram[line].firstArg;
+		if (!userProgram[line].secondArg.empty ())
+			errorMsg += ", " + userProgram[line].secondArg;
 		std::cout << "Line " << line + 1 << ": no matching register for \"" << argument << "\"\n";
 		std::cout << errorMsg << '\n';
 		std::cout << "    ^^^^\n\n";
@@ -241,44 +217,35 @@ bool setRegister (std::string* machineCodeStr, std::string argument, UserCommand
 	return false;
 }
 
-bool isDigit (std::string str) {
-	int i = 0;
-	while (isdigit (str[i]) || str[i] == '-')
-		i++;
-	if (i == str.size ())
-		return true;
-	return false;
-}
-
-int searchCommand (UserCommand userProgram, int programLen, DefinedCommand* cmdList, int cmdAmount, int line) {
+int Compiler::searchCommand (int line) {
 	int j = 0;
 	int firstArg = 0, secondArg = 0;
 
-	if (userProgram.firstArg.empty ()) {
+	if (userProgram[line].firstArg.empty ()) {
 		firstArg = -1;
-	} else if (isDigit (userProgram.firstArg)) {
+	} else if (isDigit (userProgram[line].firstArg)) {
 		firstArg = 1;
 	} else {
 		firstArg = 0;
 	}
-	if (userProgram.secondArg.empty ()) {
+	if (userProgram[line].secondArg.empty ()) {
 		secondArg = -1;
-	} else if (isDigit (userProgram.secondArg)) {
+	} else if (isDigit (userProgram[line].secondArg)) {
 		secondArg = 1;
 	} else {
 		secondArg = 0;
 	}
 
 	for (; j < cmdAmount; j++) { // поиск команды в списке определенных
-		if (userProgram.name == cmdList[j].name && cmdList[j].argOne == firstArg && cmdList[j].argTwo == secondArg) {
+		if (userProgram[line].name == cmdList[j].name && cmdList[j].argOne == firstArg && cmdList[j].argTwo == secondArg) {
 			break;
 		}
 	}
 
 	if (j == cmdAmount) { // проверка, что команда найдена
-		std::string errorMsg = userProgram.name + ' ' + userProgram.firstArg;
-		if (!userProgram.secondArg.empty ())
-			errorMsg += ", " + userProgram.secondArg;
+		std::string errorMsg = userProgram[line].name + ' ' + userProgram[line].firstArg;
+		if (!userProgram[line].secondArg.empty ())
+			errorMsg += ", " + userProgram[line].secondArg;
 		std::cout << "Line " << line + 1 << ": no matching command for \n";
 		std::cout << errorMsg << '\n';
 		std::cout << "^^^^\n\n";
@@ -288,7 +255,7 @@ int searchCommand (UserCommand userProgram, int programLen, DefinedCommand* cmdL
 	return j;
 }
 
-int labelAnalysis (std::string &codeStr, Label* labelList, int labelCount) {
+int Compiler::labelAnalysis (std::string &codeStr) {
 	std::string currentLabel {};
 	int k = 0, j = 0;
 	int addrCount = 0;
@@ -346,8 +313,38 @@ int labelAnalysis (std::string &codeStr, Label* labelList, int labelCount) {
 void compilation (std::string programName, std::string config) {
 	FILE* programFile = fopen (programName.data (), "r");
 	FILE* configFile = fopen (config.data (), "r");
-	int cmdAmount = 0, programLen = 0;
-	DefinedCommand* cmdList = readCommandList (configFile, &cmdAmount);
-	UserCommand* userProgram = readUserProgram (programFile, &programLen);
-	generateMachineCode (cmdList, userProgram, cmdAmount, programLen, programName);
+	Compiler MyCompiler (programFile, configFile);
+	MyCompiler.readUserProgram ();
+	MyCompiler.readCommandList ();
+	MyCompiler.generateMachineCode (programName);
+	MyCompiler.memoryClean ();
 }
+
+bool isDigit (std::string str) {
+	int i = 0;
+	while (isdigit (str[i]) || str[i] == '-')
+		i++;
+	if (i == str.size ())
+		return true;
+	return false;
+}
+
+size_t fileSize (FILE* file) {
+	size_t size = 0;
+	fseek (file, 0, SEEK_END);
+	size = (size_t)ftell (file);
+	if (size == 0) {
+		std::cout << "File is empty\n";
+		exit (1);
+	}
+	fseek (file, 0, SEEK_SET);
+	return size;
+}
+
+void Compiler::memoryClean () {
+	readBuffer.clear ();
+	readBuffer.shrink_to_fit ();
+	delete[] userProgram;
+	delete[] cmdList;
+	delete[] labelList;
+};
