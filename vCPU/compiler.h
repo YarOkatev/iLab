@@ -8,7 +8,7 @@
 #ifndef VCPU_COMPILER_H
 #define VCPU_COMPILER_H
 
-const int PROGRAM_SIZE = 200;
+const int DEFAULT_SIZE = 200;
 
 struct UserCommand
 {
@@ -34,30 +34,32 @@ struct Label
 class Compiler
 {
 private:
-	std::string readBuffer;
+	std::string& readBuffer;
 
 	FILE* programFile;
-	UserCommand* userProgram;
+	std::vector<UserCommand>& userProgram;
 	int programLen;
 
 	FILE* configFile;
-	DefinedCommand* cmdList;
+	std::vector<DefinedCommand>& cmdList;
 	int cmdAmount;
 
-	Label* labelList;
+	std::vector<Label>& labelList;
 	int labelCount;
+
+	std::string& machineCode;
 public:
 	Compiler (FILE* programFile_, FILE* configFile_);
 	void readUserProgram ();
 	void fileRead (FILE* file);
 	void assignString (std::string* name_, int* i);
 	void readCommandList ();
-	int readCommandCode (int* i);
+	int  readCommandCode (int* i);
 	void setCommand (std::string name, int code);
 	void generateMachineCode (std::string exeName);
-	int searchCommand (int line);
-	bool setRegister (std::string* machineCodeStr, std::string argument, int line);
-	int labelAnalysis (std::string &codeStr);
+	int  searchCommand (int line);
+	bool setRegister (std::string argument, int line);
+	int  labelAnalysis ();
 	void skipSpaces (int* i);
 	void memoryClean ();
 };

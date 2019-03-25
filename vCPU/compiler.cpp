@@ -5,6 +5,11 @@
 #include "compiler.h"
 
 Compiler::Compiler (FILE* programFile_, FILE* configFile_):
+		readBuffer (*(new std::string {})),
+		userProgram (*(new std::vector<UserCommand> (DEFAULT_SIZE))),
+		cmdList (*(new std::vector<DefinedCommand> (DEFAULT_SIZE))),
+		labelList (*(new std::vector<Label> (DEFAULT_SIZE / 2))),
+		machineCode (*(new std::string {})),
 		programFile (programFile_),
 		configFile (configFile_),
 		programLen (0),
@@ -31,10 +36,6 @@ void Compiler::readUserProgram () {
 	std::string firstArg_ {};
 	std::string secondArg_ {};
 
-	//std::vector<class UserCommand> userProgram(PROGRAM_SIZE);
-
-	userProgram = new UserCommand [PROGRAM_SIZE] {};
-
 	for (int i = 0; i < readBuffer.size (); programLen++) {
 		skipSpaces (&i);
 		assignString (&name_, &i); //command
@@ -57,8 +58,8 @@ void Compiler::readUserProgram () {
 		if (name_.empty ())
 			break;
 
-//		if (j > userProgram.capacity ())
-//			userProgram.reserve (userProgram.capacity () * 1.5);
+		if (programLen + 5 > userProgram.capacity ())
+			userProgram.resize (userProgram.capacity () * 2);
 
 		userProgram[programLen].name = name_;
 		userProgram[programLen].firstArg = firstArg_;
@@ -85,7 +86,6 @@ void Compiler::skipSpaces (int* i) {
 void Compiler::readCommandList () {
 	fileRead (configFile);
 
-	cmdList = new DefinedCommand[PROGRAM_SIZE] {};
 	int code_ = 0;
 	std::string name_ {};
 
@@ -104,6 +104,9 @@ void Compiler::readCommandList () {
 		} else {
 			setCommand (name_, code_);
 		}
+
+		if (cmdAmount + 5 > cmdList.capacity ())
+			cmdList.resize (cmdList.capacity () * 2);
 
 		name_.clear ();
 	}
@@ -142,14 +145,13 @@ void Compiler::setCommand (std::string name_, int code_) {
 }
 
 void Compiler::generateMachineCode (std::string exeName) {
-	std::string machineCode {};
 	int cmdNum = 0;
 	int errorCount = 0;
 
-	labelList = new Label[PROGRAM_SIZE] {}; //TODO айайай
-
 	for (int i = 0; i < programLen; i++) {
 		if (userProgram[i].name[0] == ':') { // проверка на метки
+			if (labelCount + 5 > labelList.capacity ())
+				labelList.resize (labelList.capacity () * 2);
 			labelList[labelCount].name = userProgram[i].name;
 			machineCode += userProgram[i].name + ' ';
 			labelCount++;
@@ -168,13 +170,13 @@ void Compiler::generateMachineCode (std::string exeName) {
 				continue;
 			}
 			if (cmdList[cmdNum].argOne == 0) {
-				if (setRegister (&machineCode, userProgram[i].firstArg, i))
+				if (setRegister (userProgram[i].firstArg, i))
 					errorCount++;
 			} else if (cmdList[cmdNum].argOne == 1) {
 				machineCode += userProgram[i].firstArg + ' ';
 			}
 			if (cmdList[cmdNum].argTwo == 0) {
-				if (setRegister (&machineCode, userProgram[i].secondArg, i))
+				if (setRegister (userProgram[i].secondArg, i))
 					errorCount++;
 			} else if (cmdList[cmdNum].argTwo == 1) {
 				machineCode += userProgram[i].secondArg + ' ';
@@ -182,7 +184,8 @@ void Compiler::generateMachineCode (std::string exeName) {
 		}
 	}
 
-	errorCount += labelAnalysis (machineCode);
+	errorCount += labelAnalysis ();
+
 	if (errorCount == 0) {
 		std::cout << "Compilation successful\n";
 		exeName += ".vcpu";
@@ -196,15 +199,15 @@ void Compiler::generateMachineCode (std::string exeName) {
 	}
 }
 
-bool Compiler::setRegister (std::string* machineCodeStr, std::string argument, int line) {
+bool Compiler::setRegister (std::string argument, int line) {
 	if (argument == "ax") {
-		*machineCodeStr += "0 ";
+		machineCode += "0 ";
 	} else if (argument == "bx") {
-		*machineCodeStr += "1 ";
+		machineCode+= "1 ";
 	} else if (argument == "cx") {
-		*machineCodeStr += "2 ";
+		machineCode += "2 ";
 	} else if (argument == "dx") {
-		*machineCodeStr += "3 ";
+		machineCode += "3 ";
 	} else {
 		std::string errorMsg = userProgram[line].name + ' ' + userProgram[line].firstArg;
 		if (!userProgram[line].secondArg.empty ())
@@ -255,20 +258,20 @@ int Compiler::searchCommand (int line) {
 	return j;
 }
 
-int Compiler::labelAnalysis (std::string &codeStr) {
+int Compiler::labelAnalysis () {
 	std::string currentLabel {};
 	int k = 0, j = 0;
 	int addrCount = 0;
 	int errorCount = 0;
-	for (int i = 0; i < codeStr.size (); i++) {
-		if (codeStr[i] == ':') {
+	for (int i = 0; i < machineCode.size (); i++) {
+		if (machineCode[i] == ':') {
 			currentLabel.clear ();
 			k = i; j = 0;
-			while (codeStr[k] != ' ') {
-				currentLabel += codeStr[k];
+			while (machineCode[k] != ' ') {
+				currentLabel += machineCode[k];
 				k++;
 			}
-			codeStr.erase (i, currentLabel.size () + 1);
+			machineCode.erase (i, currentLabel.size () + 1);
 			for (; j < labelCount; j++) {
 				if (labelList[j].name == currentLabel) {
 					if (labelList[j].address != 0) {
@@ -280,23 +283,23 @@ int Compiler::labelAnalysis (std::string &codeStr) {
 				}
 			}
 		}
-		if (codeStr[i] == ' ')
+		if (machineCode[i] == ' ')
 			addrCount++;
 	}
 
-	for (int i = 0; i < codeStr.size (); i++) {
-		if (isalpha (codeStr[i])) {
+	for (int i = 0; i < machineCode.size (); i++) {
+		if (isalpha (machineCode[i])) {
 			currentLabel.clear ();
 			currentLabel += ':';
 			k = i; j = 0;
-			while (codeStr[k] != ' ') {
-				currentLabel += codeStr[k];
+			while (machineCode[k] != ' ') {
+				currentLabel += machineCode[k];
 				k++;
 			}
-			codeStr.erase (i, currentLabel.size () - 1);
+			machineCode.erase (i, currentLabel.size () - 1);
 			for (; j < labelCount; j++) {
 				if (labelList[j].name == currentLabel) {
-					codeStr.insert (i, std::to_string (labelList[j].address));
+					machineCode.insert (i, std::to_string (labelList[j].address));
 					break;
 				}
 			}
@@ -342,9 +345,9 @@ size_t fileSize (FILE* file) {
 }
 
 void Compiler::memoryClean () {
-	readBuffer.clear ();
-	readBuffer.shrink_to_fit ();
-	delete[] userProgram;
-	delete[] cmdList;
-	delete[] labelList;
+	delete &readBuffer;
+	delete &labelList;
+	delete &userProgram;
+	delete &cmdList;
+	delete &machineCode;
 };
