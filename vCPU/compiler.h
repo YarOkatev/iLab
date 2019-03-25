@@ -50,6 +50,7 @@ private:
 	std::string& machineCode;
 public:
 	Compiler (FILE* programFile_, FILE* configFile_);
+	~Compiler ();
 	void readUserProgram ();
 	void fileRead (FILE* file);
 	void assignString (std::string* name_, int* i);

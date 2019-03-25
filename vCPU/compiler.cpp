@@ -69,7 +69,7 @@ void Compiler::readUserProgram () {
 		firstArg_.clear ();
 		secondArg_.clear ();
 	};
-} //TODO realloc
+}
 
 void Compiler::assignString (std::string* name_, int* i) {
 	while (isalnum (readBuffer[*i]) || (ispunct (readBuffer[*i]) && readBuffer[*i] != ',' && readBuffer[*i] != ';')) {
@@ -110,7 +110,7 @@ void Compiler::readCommandList () {
 
 		name_.clear ();
 	}
-} //TODO realloc
+}
 
 int Compiler::readCommandCode (int* i) {
 	*i += 1;
@@ -320,7 +320,7 @@ void compilation (std::string programName, std::string config) {
 	MyCompiler.readUserProgram ();
 	MyCompiler.readCommandList ();
 	MyCompiler.generateMachineCode (programName);
-	MyCompiler.memoryClean ();
+	//MyCompiler.memoryClean ();
 }
 
 bool isDigit (std::string str) {
@@ -345,6 +345,14 @@ size_t fileSize (FILE* file) {
 }
 
 void Compiler::memoryClean () {
+	delete &readBuffer;
+	delete &labelList;
+	delete &userProgram;
+	delete &cmdList;
+	delete &machineCode;
+}
+
+Compiler::~Compiler () {
 	delete &readBuffer;
 	delete &labelList;
 	delete &userProgram;

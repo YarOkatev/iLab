@@ -36,7 +36,6 @@ class Processor
 private:
 	CpuMemory memory;
 	Stack stack;
-	//TODO time
 public:
 	Processor (FILE* bootFile);
 	void tact ();
