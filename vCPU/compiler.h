@@ -48,21 +48,21 @@ private:
 	int labelCount;
 
 	std::string& machineCode;
-public:
-	Compiler (FILE* programFile_, FILE* configFile_);
-	~Compiler ();
-	void readUserProgram ();
+
 	void fileRead (FILE* file);
 	void assignString (std::string* name_, int* i);
-	void readCommandList ();
 	int  readCommandCode (int* i);
 	void setCommand (std::string name, int code);
-	void generateMachineCode (std::string exeName);
 	int  searchCommand (int line);
 	bool setRegister (std::string argument, int line);
 	int  labelAnalysis ();
 	void skipSpaces (int* i);
-	void memoryClean ();
+public:
+	Compiler (FILE* programFile_, FILE* configFile_);
+	~Compiler ();
+	void readUserProgram ();
+	void readCommandList ();
+	void generateMachineCode (std::string exeName);
 };
 
 size_t fileSize (FILE* file);

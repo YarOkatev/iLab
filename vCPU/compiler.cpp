@@ -320,7 +320,6 @@ void compilation (std::string programName, std::string config) {
 	MyCompiler.readUserProgram ();
 	MyCompiler.readCommandList ();
 	MyCompiler.generateMachineCode (programName);
-	//MyCompiler.memoryClean ();
 }
 
 bool isDigit (std::string str) {
@@ -342,14 +341,6 @@ size_t fileSize (FILE* file) {
 	}
 	fseek (file, 0, SEEK_SET);
 	return size;
-}
-
-void Compiler::memoryClean () {
-	delete &readBuffer;
-	delete &labelList;
-	delete &userProgram;
-	delete &cmdList;
-	delete &machineCode;
 }
 
 Compiler::~Compiler () {

@@ -8,7 +8,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
-#include <vector>
 #include "stack.h"
 
 const int MEM_SIZE = 1024;
@@ -36,9 +35,6 @@ class Processor
 private:
 	CpuMemory memory;
 	Stack stack;
-public:
-	Processor (FILE* bootFile);
-	void tact ();
 
 	void halt ();
 	void dump ();
@@ -65,6 +61,9 @@ public:
 	void rcmp ();
 
 	void reg ();
+public:
+	Processor (FILE* bootFile);
+	void tact ();
 };
 
 void  startCPU (std::string romFile);
