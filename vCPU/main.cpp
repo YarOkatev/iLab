@@ -2,7 +2,7 @@
 #include "compiler.h"
 
 int main () {
-	std::string programName = "fib";
+	std::string programName = "sqreq";
 	compilation (programName, "cmdlist.txt");
 	startCPU (programName);
 }

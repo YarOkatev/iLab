@@ -11,26 +11,23 @@
 
 const int PROGRAM_SIZE = 100;
 
-class UserCommand
+struct UserCommand
 {
-public:
 	std::string name;
 	std::string firstArg;
 	std::string secondArg;
 };
 
-class DefinedCommand
+struct DefinedCommand
 {
-public:
 	std::string name;
 	int code;
 	int argOne;
 	int argTwo;
 };
 
-class Label
+struct Label
 {
-public:
 	std::string name;
 	int address;
 };
@@ -43,12 +40,12 @@ void assignString (std::string* name_, std::string& rawInput, int* i);
 DefinedCommand* readCommandList (FILE* config, int* cmdAmount);
 int readCommandCode (std::string &rawInput, int* i);
 void setCommand (std::string name, int code, DefinedCommand* command);
-void generateMachineCode (DefinedCommand* cmdList, struct UserCommand* userProgram, int cmdAmount, int programLen,
+void generateMachineCode (DefinedCommand* cmdList, UserCommand* userProgram, int cmdAmount, int programLen,
 						  std::string exeName);
 bool isDigit (std::string str);
-int searchCommand (class UserCommand userProgram, int programLen, DefinedCommand* cmdList, int cmdAmount, int line);
+int searchCommand (UserCommand userProgram, int programLen, DefinedCommand* cmdList, int cmdAmount, int line);
 bool setRegister (std::string* machineCodeStr, std::string argument, UserCommand userProgram, int line);
-int labelAnalysis (std::string &codeStr, class Label* labelList, int labelCount);
+int labelAnalysis (std::string &codeStr, Label* labelList, int labelCount);
 void compilation (std::string programName, std::string config);
 
 #endif //VCPU_COMPILER_H

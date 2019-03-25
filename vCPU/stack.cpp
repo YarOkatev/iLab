@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <cmath>
 #include "stack.h"
 
 int Stack::size () {
@@ -86,12 +87,13 @@ void Stack::mul () {
 }
 
 int Stack::cmp () {
-	int a = pop ();
-	int b = top ();
-	push (a);
-	if (a == b)
+	if (size_ < 2) {
+		std::cout << "Stack contains less than two elements\n";
+		return -1;
+	}
+	if (data_[size_ - 1] == data_[size_ - 2])
 		return 0;
-	if (a > b)
+	if (data_[size_ - 1] > data_[size_ - 2])
 		return 1;
 	else
 		return 2;
@@ -102,5 +104,10 @@ void Stack::dump () {
 	for (int i = 0; i < size (); i++)
 		std::cout << data_[i] << " ";
 	std::cout << "\n";
+}
+
+void Stack::ssqrt () {
+	int x = pop ();
+	push (sqrt (x));
 }
 

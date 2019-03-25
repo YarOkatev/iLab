@@ -27,6 +27,7 @@ public:
 	void sub ();
 	void div ();
 	void mul ();
+	void ssqrt ();
 	int cmp ();
 	void dump ();
 };

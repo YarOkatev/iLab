@@ -18,6 +18,10 @@ size_t fileSize (FILE* file) {
 
 std::string* fileRead (FILE* file) {
 	int i = 0;
+	if (!file) {
+		std::cout << "File opening error";
+		exit (1);
+	}
 	size_t size = fileSize (file);
 	std::string* readBuf = new std::string {};
 	readBuf->resize (size + 1);

@@ -16,5 +16,6 @@ add:053
 sub:054
 div:055
 mul:056
+sqrt:57
 cmp:201:052
 reg:252

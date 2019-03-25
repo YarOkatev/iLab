@@ -161,6 +161,10 @@ void Processor::tact () {
 				stack.mul ();
 				break;
 			}
+			case 57: {
+				stack.ssqrt ();
+				break;
+			}
 			case 101: {
 				top ();
 				break;
@@ -240,6 +244,10 @@ void Processor::dump () {
 void startCPU (std::string fileName) {
 	fileName += ".vcpu";
 	FILE* bootFile = fopen (fileName.data (), "r");
+	if (!bootFile) {
+		std::cout << "File opening error";
+		exit (1);
+	}
 	Processor myCpu (bootFile);
 	myCpu.tact ();
 }
