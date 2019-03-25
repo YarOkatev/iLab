@@ -25,6 +25,11 @@ int CpuMemory::getWord () {
 	return memArray[currentPtr - 1];
 }
 
+CpuMemory::~CpuMemory () {
+	delete[] regArray;
+	delete[] memArray;
+}
+
 void Processor::halt () {
 	std::cout << "vCPU stopped\n";
 	exit (0);

@@ -25,6 +25,7 @@ private:
 	int currentPtr;
 public:
 	CpuMemory ();
+	~CpuMemory ();
 	void flashMem (FILE* bootFile);
 	int  getWord ();
 	friend Processor;
