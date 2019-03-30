@@ -39,26 +39,26 @@ void Compiler::readUserProgram () {
 	for (int i = 0; i < readBuffer.size (); programLen++) {
 		skipSpaces (&i);
 		assignString (&name_, &i); //command
-		if (isspace (readBuffer[i]) && readBuffer[i] != '\n') {
+		if (isspace (readBuffer[i]) && readBuffer[i] != '\n') { //first argument
 			skipSpaces (&i);
 			assignString (&firstArg_, &i);
 		}
 		skipSpaces (&i);
-		if (readBuffer[i] == ',') {
+		if (readBuffer[i] == ',') {  //second argument
 			i++;
 			skipSpaces (&i);
 			assignString (&secondArg_, &i);
 		}
 		skipSpaces (&i);
-		if (readBuffer[i] == ';') {
+		if (readBuffer[i] == ';') { //skip commentaries
 			while (readBuffer[i] != '\n')
 				i++;
 		}
 
-		if (name_.empty ())
+		if (name_.empty ()) //all file was read
 			break;
 
-		if (programLen + 5 > userProgram.capacity ())
+		if (programLen + 5 > userProgram.capacity ()) //resize vector
 			userProgram.resize (userProgram.capacity () * 2);
 
 		userProgram[programLen].name = name_;
@@ -105,7 +105,7 @@ void Compiler::readCommandList () {
 			setCommand (name_, code_);
 		}
 
-		if (cmdAmount + 5 > cmdList.capacity ())
+		if (cmdAmount + 5 > cmdList.capacity ()) //resize vector
 			cmdList.resize (cmdList.capacity () * 2);
 
 		name_.clear ();
@@ -149,7 +149,7 @@ void Compiler::generateMachineCode (std::string exeName) {
 	int errorCount = 0;
 
 	for (int i = 0; i < programLen; i++) {
-		if (userProgram[i].name[0] == ':') { // проверка на метки
+		if (userProgram[i].name[0] == ':') { //labels check
 			if (labelCount + 5 > labelList.capacity ())
 				labelList.resize (labelList.capacity () * 2);
 			labelList[labelCount].name = userProgram[i].name;
@@ -158,14 +158,14 @@ void Compiler::generateMachineCode (std::string exeName) {
 			continue;
 		}
 
-		cmdNum = searchCommand (i);
+		cmdNum = searchCommand (i); //search command through the defined commands
 
 		if (cmdNum < 0) {
 			errorCount++;
 		} else {
 			machineCode += std::to_string (cmdList[cmdNum].code) + ' ';
 			if (userProgram[i].name == "je" || userProgram[i].name == "jmp" || userProgram[i].name == "jne" ||
-				userProgram[i].name == "ja" || userProgram[i].name == "jb") { // обработка jump отдельно
+				userProgram[i].name == "ja" || userProgram[i].name == "jb") { //jump processing
 				machineCode += userProgram[i].firstArg + ' ';
 				continue;
 			}
@@ -184,7 +184,7 @@ void Compiler::generateMachineCode (std::string exeName) {
 		}
 	}
 
-	errorCount += labelAnalysis ();
+	errorCount += labelAnalysis (); //label processing
 
 	if (errorCount == 0) {
 		std::cout << "Compilation successful\n";
@@ -239,13 +239,13 @@ int Compiler::searchCommand (int line) {
 		secondArg = 0;
 	}
 
-	for (; j < cmdAmount; j++) { // поиск команды в списке определенных
+	for (; j < cmdAmount; j++) { //search command through the defined commands
 		if (userProgram[line].name == cmdList[j].name && cmdList[j].argOne == firstArg && cmdList[j].argTwo == secondArg) {
 			break;
 		}
 	}
 
-	if (j == cmdAmount) { // проверка, что команда найдена
+	if (j == cmdAmount) { //is command found?
 		std::string errorMsg = userProgram[line].name + ' ' + userProgram[line].firstArg;
 		if (!userProgram[line].secondArg.empty ())
 			errorMsg += ", " + userProgram[line].secondArg;

@@ -37,31 +37,31 @@ private:
 	CpuMemory memory;
 	Stack stack;
 
-	void halt ();
-	void dump ();
-	void loop ();
+	void halt (); //0
+	void dump (); //1
+	void loop (); //100
 
 	void pop (); //51
-	void scmp ();
-	//add, sub, mul, div -- stack functions
+	void scmp (); //52
+	//add, sub, mul, div -- stack functions // 53, 54, 55, 56
 
-	void top ();
-	void rpush ();
-	void rpop ();
-	void jmp ();
-	void je ();
-	void jne ();
-	void ja ();
-	void jb ();
-	void print ();
+	void top (); //101
+	void rpush (); //103
+	void rpop (); //104
+	void jmp (); //105
+	void je (); //106
+	void jne (); //107
+	void ja (); //108
+	void jb (); //109
+	void print (); //110
 
-	void write ();
+	void write (); //111
 
-	void npush ();
+	void npush (); //151
 
-	void rcmp ();
+	void rcmp (); //201
 
-	void reg ();
+	void reg (); //252
 public:
 	Processor (FILE* bootFile);
 	void tact ();

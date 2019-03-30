@@ -8,7 +8,7 @@
 #ifndef VCPU_COMPILER_H
 #define VCPU_COMPILER_H
 
-const int DEFAULT_SIZE = 200;
+const int DEFAULT_SIZE = 100;
 
 struct UserCommand
 {
