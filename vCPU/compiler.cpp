@@ -127,7 +127,7 @@ void Compiler::setCommand (std::string name_, int code_) {
 	cmdList[cmdAmount].name = name_;
 	cmdList[cmdAmount].code = code_;
 	if (code_ < 100) {
-		cmdList[cmdAmount].argOne = -1; // -1 no arg, 0 arg is reg, 1 arg is num
+		cmdList[cmdAmount].argOne = -1; // -1 no arg, 0 arg is mov, 1 arg is num
 		cmdList[cmdAmount].argTwo = -1;
 	} else if (code_ > 100 && code_ < 150) {
 		cmdList[cmdAmount].argOne = 0;

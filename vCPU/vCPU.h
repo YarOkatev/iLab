@@ -11,9 +11,9 @@
 #include "stack.h"
 
 const int MEM_SIZE = 1024;
-const int STACK_SIZE = 32;
+const int STACK_SIZE = 256;
 
-enum {AX, BX, CX, DX, LX};
+enum {AX, BX, CX, DX, LX, SP, FP};
 
 class Processor;
 
@@ -61,7 +61,7 @@ private:
 
 	void rcmp (); //201
 
-	void reg (); //252
+	void mov (); //252
 public:
 	Processor (FILE* bootFile);
 	void tact ();

@@ -5,7 +5,7 @@
 #include "vCPU.h"
 
 CpuMemory::CpuMemory ():
-	regArray (new int[5] {}),
+	regArray (new int[7] {}),
 	memArray (new int[MEM_SIZE] {}),
 	currentPtr (0)
 	{};
@@ -122,7 +122,7 @@ void Processor::rcmp () {
 		memory.regArray[LX] = 2;
 }
 
-void Processor::reg () {
+void Processor::mov () {
 	int num = memory.getWord ();
 	memory.regArray[memory.getWord ()] = num;
 }
@@ -219,7 +219,7 @@ void Processor::tact () {
 				break;
 			}
 			case 252: {
-				reg ();
+				mov ();
 				break;
 			}
 			default: {

@@ -1,7 +1,7 @@
 write dx
 push 1
 push 1
-reg 2, cx
+mov 2, cx
 :begin
     ; dump
     top ax
