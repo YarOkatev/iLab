@@ -32,54 +32,31 @@ void Compiler::fileRead (FILE* file) {
 void Compiler::readUserProgram () {
 	fileRead (programFile);
 
-	std::string name_ {};
-	std::string firstArg_ {};
-	std::string secondArg_ {};
-
-	for (int i = 0; i < readBuffer.size (); programLen++) {
-		skipSpaces (&i);
-		assignString (&name_, &i); //command
-		if (isspace (readBuffer[i]) && readBuffer[i] != '\n') { //first argument
+	for (int i = 0; i < readBuffer.size (); i++) {
+		for (int j = 0; ; j++) {
 			skipSpaces (&i);
-			assignString (&firstArg_, &i);
+			if (userProgram[programLen].arg.capacity () <= j)
+				userProgram[programLen].arg.resize (userProgram[programLen].arg.capacity () + 3);
+			assignString (&(userProgram[programLen].arg[j]), &i);
+			if (readBuffer[i] == '\n' || i + 1 >= readBuffer.size ())
+				break;
 		}
-		skipSpaces (&i);
-		if (readBuffer[i] == ',') {  //second argument
-			i++;
-			skipSpaces (&i);
-			assignString (&secondArg_, &i);
-		}
-		skipSpaces (&i);
-		if (readBuffer[i] == ';') { //skip commentaries
-			while (readBuffer[i] != '\n')
-				i++;
-		}
-
-		if (name_.empty ()) //all file was read
-			break;
-
-		if (programLen + 5 > userProgram.capacity ()) //resize vector
-			userProgram.resize (userProgram.capacity () * 2);
-
-		userProgram[programLen].name = name_;
-		userProgram[programLen].firstArg = firstArg_;
-		userProgram[programLen].secondArg = secondArg_;
-
-		name_.clear ();
-		firstArg_.clear ();
-		secondArg_.clear ();
-	};
+		programLen++;
+	}
+	std::cout << "asd";
 }
 
 void Compiler::assignString (std::string* name_, int* i) {
-	while (isalnum (readBuffer[*i]) || (ispunct (readBuffer[*i]) && readBuffer[*i] != ',' && readBuffer[*i] != ';')) {
+	while ((isalnum (readBuffer[*i]) || (readBuffer[*i] == '-') || (readBuffer[*i] == '+') || (readBuffer[*i] == ':'))\
+			&& *i <= readBuffer.size ()) {
 		*name_ += readBuffer[*i];
 		*i += 1;
 	}
 }
 
 void Compiler::skipSpaces (int* i) {
-	while (isspace (readBuffer[*i]))
+	while ((isspace (readBuffer[*i]) || readBuffer[*i] == '[' || readBuffer[*i] == ']' || readBuffer[*i] == '(' \
+			|| readBuffer[*i] == ')' || readBuffer[*i] == ',') && readBuffer[*i] != '\n' && *i <= readBuffer.size ())
 		*i += 1;
 }
 
@@ -89,21 +66,19 @@ void Compiler::readCommandList () {
 	int code_ = 0;
 	std::string name_ {};
 
-	for (int i = 0; i < readBuffer.size (); i++, cmdAmount++) {
-		skipSpaces (&i);
+	for (int i = 0; i < readBuffer.size (); i++) {
+		while (isspace (readBuffer[i]))
+			i++;
 		while (isalpha (readBuffer[i])) { // read name
 			name_ += readBuffer[i];
 			i++;
 		}
-		code_ = readCommandCode (&i); // read code
-		if (readBuffer[i] == ':') { // if two codes
-			setCommand (name_, code_);
-			cmdAmount++;
+
+		do {
 			code_ = readCommandCode (&i);
 			setCommand (name_, code_);
-		} else {
-			setCommand (name_, code_);
-		}
+			cmdAmount++;
+		} while (readBuffer[i] == ':');
 
 		if (cmdAmount + 5 > cmdList.capacity ()) //resize vector
 			cmdList.resize (cmdList.capacity () * 2);

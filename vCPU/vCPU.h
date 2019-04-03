@@ -13,7 +13,7 @@
 const int MEM_SIZE = 1024;
 const int STACK_SIZE = 256;
 
-enum {AX, BX, CX, DX, LX, SP, FP};
+enum {AX, BX, CX, DX, LX, SP, FP, RX};  //SP - Stack Pointer, FP - Frame Pointer, RX - Return
 
 class Processor;
 

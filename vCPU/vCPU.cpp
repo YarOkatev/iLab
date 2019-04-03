@@ -5,7 +5,7 @@
 #include "vCPU.h"
 
 CpuMemory::CpuMemory ():
-	regArray (new int[7] {}),
+	regArray (new int[8] {}),
 	memArray (new int[MEM_SIZE] {}),
 	currentPtr (0)
 	{};

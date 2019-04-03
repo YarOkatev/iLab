@@ -13,8 +13,10 @@ const int DEFAULT_SIZE = 100;
 struct UserCommand
 {
 	std::string name;
+	int argNum;
 	std::string firstArg;
 	std::string secondArg;
+	std::vector<std::string> arg;
 };
 
 struct DefinedCommand
@@ -35,6 +37,7 @@ class Compiler
 {
 private:
 	std::string& readBuffer;
+	char*  currWord;
 
 	FILE* programFile;
 	std::vector<UserCommand>& userProgram;
