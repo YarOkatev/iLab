@@ -68,7 +68,7 @@ jmp disc
     halt
 
 :error
-    mov 0, dx
+    movN 0, dx
     print dx
     print dx
     print dx

@@ -111,3 +111,7 @@ void Stack::ssqrt () {
 	push (sqrt (x));
 }
 
+int* Stack::data () {
+	return data_;
+}
+

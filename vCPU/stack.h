@@ -30,6 +30,7 @@ public:
 	void ssqrt ();
 	int cmp ();
 	void dump ();
+	int* data ();
 };
 
 #endif //STACK_STACK_H

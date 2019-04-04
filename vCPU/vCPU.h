@@ -61,7 +61,12 @@ private:
 
 	void rcmp (); //201
 
-	void mov (); //252
+	void movN (); //252
+
+	void movSN (); //301
+	void movSR (); //302
+	void ret ();
+	void call ();
 public:
 	Processor (FILE* bootFile);
 	void tact ();

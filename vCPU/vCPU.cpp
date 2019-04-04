@@ -122,7 +122,7 @@ void Processor::rcmp () {
 		memory.regArray[LX] = 2;
 }
 
-void Processor::mov () {
+void Processor::movN () {
 	int num = memory.getWord ();
 	memory.regArray[memory.getWord ()] = num;
 }
@@ -219,7 +219,7 @@ void Processor::tact () {
 				break;
 			}
 			case 252: {
-				mov ();
+				movN ();
 				break;
 			}
 			default: {
@@ -244,6 +244,22 @@ void Processor::dump () {
 	std::cout << "DX: " << memory.regArray[DX] << "\n";
 	std::cout << "LX: " << memory.regArray[LX] << "\n";
 	std::cout << "------------------------------\n\n";
+}
+
+void Processor::movSN () {
+	int* currReg = &memory.regArray[memory.getWord ()];
+	if (memory.getWord () == 1)
+		*currReg = stack.data ()[memory.regArray[memory.getWord ()] + memory.getWord ()];
+	else
+		*currReg = stack.data ()[memory.regArray[memory.getWord ()] - memory.getWord ()];
+}
+
+void Processor::movSR () {
+	int* currReg = &memory.regArray[memory.getWord ()];
+	if (memory.getWord () == 1)
+		*currReg = stack.data ()[memory.regArray[memory.getWord ()] + memory.regArray[memory.getWord ()]];
+	else
+		*currReg = stack.data ()[memory.regArray[memory.getWord ()] - memory.regArray[memory.getWord ()]];
 }
 
 void startCPU (std::string fileName) {

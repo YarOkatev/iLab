@@ -14,7 +14,8 @@ Compiler::Compiler (FILE* programFile_, FILE* configFile_):
 		configFile (configFile_),
 		programLen (0),
 		cmdAmount (0),
-		labelCount (0)
+		labelCount (0),
+		errorCount (0)
 {};
 
 void Compiler::fileRead (FILE* file) {
@@ -43,7 +44,6 @@ void Compiler::readUserProgram () {
 		}
 		programLen++;
 	}
-	std::cout << "asd";
 }
 
 void Compiler::assignString (std::string* name_, int* i) {
@@ -102,7 +102,7 @@ void Compiler::setCommand (std::string name_, int code_) {
 	cmdList[cmdAmount].name = name_;
 	cmdList[cmdAmount].code = code_;
 	if (code_ < 100) {
-		cmdList[cmdAmount].argOne = -1; // -1 no arg, 0 arg is mov, 1 arg is num
+		cmdList[cmdAmount].argOne = -1; // -1 no arg, 0 arg is reg, 1 arg is num
 		cmdList[cmdAmount].argTwo = -1;
 	} else if (code_ > 100 && code_ < 150) {
 		cmdList[cmdAmount].argOne = 0;
@@ -121,45 +121,53 @@ void Compiler::setCommand (std::string name_, int code_) {
 
 void Compiler::generateMachineCode (std::string exeName) {
 	int cmdNum = 0;
-	int errorCount = 0;
 
 	for (int i = 0; i < programLen; i++) {
-		if (userProgram[i].name[0] == ':') { //labels check
+		if (userProgram[i].arg[0].empty ())
+			continue;
+
+		if (userProgram[i].arg[0][0] == ':') { //labels check
 			if (labelCount + 5 > labelList.capacity ())
 				labelList.resize (labelList.capacity () * 2);
-			labelList[labelCount].name = userProgram[i].name;
-			machineCode += userProgram[i].name + ' ';
+			labelList[labelCount].name = userProgram[i].arg[0];
+			machineCode += userProgram[i].arg[0] + ' ';
 			labelCount++;
 			continue;
 		}
-
-		cmdNum = searchCommand (i); //search command through the defined commands
+		if (userProgram[i].arg[0] == "call") {
+			callProcessing (i);
+			continue;
+		} else if (userProgram[i].arg[0] == "mov") {
+			movProcessing (i);
+			continue;
+		} else {
+			cmdNum = searchCommand (i); //search command through the defined commands
+		}
 
 		if (cmdNum < 0) {
 			errorCount++;
 		} else {
 			machineCode += std::to_string (cmdList[cmdNum].code) + ' ';
-			if (userProgram[i].name == "je" || userProgram[i].name == "jmp" || userProgram[i].name == "jne" ||
-				userProgram[i].name == "ja" || userProgram[i].name == "jb") { //jump processing
-				machineCode += userProgram[i].firstArg + ' ';
+			if (userProgram[i].arg[0] == "je" || userProgram[i].arg[0] == "jmp" || userProgram[i].arg[0] == "jne" ||
+				userProgram[i].arg[0] == "ja" || userProgram[i].arg[0] == "jb") { //jump processing
+				if (!isDigit (userProgram[i].arg[1]))
+					machineCode += userProgram[i].arg[1] + ' ';
 				continue;
 			}
 			if (cmdList[cmdNum].argOne == 0) {
-				if (setRegister (userProgram[i].firstArg, i))
-					errorCount++;
+				setRegister (userProgram[i].arg[1], i);
 			} else if (cmdList[cmdNum].argOne == 1) {
-				machineCode += userProgram[i].firstArg + ' ';
+				machineCode += userProgram[i].arg[1] + ' ';
 			}
 			if (cmdList[cmdNum].argTwo == 0) {
-				if (setRegister (userProgram[i].secondArg, i))
-					errorCount++;
+				setRegister (userProgram[i].arg[2], i);
 			} else if (cmdList[cmdNum].argTwo == 1) {
-				machineCode += userProgram[i].secondArg + ' ';
+				machineCode += userProgram[i].arg[2] + ' ';
 			}
 		}
 	}
 
-	errorCount += labelAnalysis (); //label processing
+	labelAnalysis (); //label processing
 
 	if (errorCount == 0) {
 		std::cout << "Compilation successful\n";
@@ -174,7 +182,7 @@ void Compiler::generateMachineCode (std::string exeName) {
 	}
 }
 
-bool Compiler::setRegister (std::string argument, int line) {
+void Compiler::setRegister (std::string argument, int line) {
 	if (argument == "ax") {
 		machineCode += "0 ";
 	} else if (argument == "bx") {
@@ -183,47 +191,54 @@ bool Compiler::setRegister (std::string argument, int line) {
 		machineCode += "2 ";
 	} else if (argument == "dx") {
 		machineCode += "3 ";
+	} else if (argument == "lx") {
+		machineCode += "4 ";
+	} else if (argument == "sp") {
+		machineCode += "5 ";
+	} else if (argument == "fp") {
+		machineCode += "6 ";
+	} else if (argument == "rx") {
+		machineCode += "7 ";
 	} else {
-		std::string errorMsg = userProgram[line].name + ' ' + userProgram[line].firstArg;
-		if (!userProgram[line].secondArg.empty ())
-			errorMsg += ", " + userProgram[line].secondArg;
+		std::string errorMsg = userProgram[line].arg[0] + ' ' + userProgram[line].arg[1];
+		if (!userProgram[line].arg[2].empty ())
+			errorMsg += ", " + userProgram[line].arg[2];
 		std::cout << "Line " << line + 1 << ": no matching register for \"" << argument << "\"\n";
 		std::cout << errorMsg << '\n';
 		std::cout << "    ^^^^\n\n";
-		return true;
+		errorCount++;
 	}
-	return false;
 }
 
 int Compiler::searchCommand (int line) {
 	int j = 0;
 	int firstArg = 0, secondArg = 0;
 
-	if (userProgram[line].firstArg.empty ()) {
+	if (userProgram[line].arg[1].empty ()) {
 		firstArg = -1;
-	} else if (isDigit (userProgram[line].firstArg)) {
+	} else if (isDigit (userProgram[line].arg[1])) {
 		firstArg = 1;
 	} else {
 		firstArg = 0;
 	}
-	if (userProgram[line].secondArg.empty ()) {
+	if (userProgram[line].arg[2].empty ()) {
 		secondArg = -1;
-	} else if (isDigit (userProgram[line].secondArg)) {
+	} else if (isDigit (userProgram[line].arg[2])) {
 		secondArg = 1;
 	} else {
 		secondArg = 0;
 	}
 
 	for (; j < cmdAmount; j++) { //search command through the defined commands
-		if (userProgram[line].name == cmdList[j].name && cmdList[j].argOne == firstArg && cmdList[j].argTwo == secondArg) {
+		if (userProgram[line].arg[0] == cmdList[j].name && cmdList[j].argOne == firstArg && cmdList[j].argTwo == secondArg) {
 			break;
 		}
 	}
 
 	if (j == cmdAmount) { //is command found?
-		std::string errorMsg = userProgram[line].name + ' ' + userProgram[line].firstArg;
-		if (!userProgram[line].secondArg.empty ())
-			errorMsg += ", " + userProgram[line].secondArg;
+		std::string errorMsg = userProgram[line].arg[0] + ' ' + userProgram[line].arg[1];
+		if (!userProgram[line].arg[2].empty ())
+			errorMsg += ", " + userProgram[line].arg[2];
 		std::cout << "Line " << line + 1 << ": no matching command for \n";
 		std::cout << errorMsg << '\n';
 		std::cout << "^^^^\n\n";
@@ -233,11 +248,10 @@ int Compiler::searchCommand (int line) {
 	return j;
 }
 
-int Compiler::labelAnalysis () {
+void Compiler::labelAnalysis () {
 	std::string currentLabel {};
 	int k = 0, j = 0;
 	int addrCount = 0;
-	int errorCount = 0;
 	for (int i = 0; i < machineCode.size (); i++) {
 		if (machineCode[i] == ':') {
 			currentLabel.clear ();
@@ -284,8 +298,6 @@ int Compiler::labelAnalysis () {
 			}
 		}
 	}
-
-	return errorCount;
 }
 
 void compilation (std::string programName, std::string config) {
@@ -299,7 +311,7 @@ void compilation (std::string programName, std::string config) {
 
 bool isDigit (std::string str) {
 	int i = 0;
-	while (isdigit (str[i]) || str[i] == '-')
+	while (isdigit (str[i]) || str[i] == '-' || str[i] == '+')
 		i++;
 	if (i == str.size ())
 		return true;
@@ -324,4 +336,38 @@ Compiler::~Compiler () {
 	delete &userProgram;
 	delete &cmdList;
 	delete &machineCode;
+}
+
+void Compiler::callProcessing (int line) {
+	for (int j = 0; j < cmdAmount; j++) { //search command through the defined commands
+		if (userProgram[line].arg[0] == cmdList[j].name) {
+			machineCode += std::to_string (cmdList[j].code) + " ";
+			break;
+		}
+	}
+	if (!isDigit (userProgram[line].arg[1]))
+		machineCode += userProgram[line].arg[1] + ' ';
+	int strPos = machineCode.size ();
+	int k = 2;
+	while (!userProgram[line].arg[k].empty ()) {
+		if (isDigit (userProgram[line].arg[k])) {
+			machineCode += "1 ";
+			machineCode += userProgram[line].arg[k] + ' ';
+		} else {
+			machineCode += "0 ";
+			setRegister (userProgram[line].arg[k], line);
+		}
+		k++;
+	}
+	machineCode.insert (strPos, std::to_string (k - 2) + " ");
+}
+
+void Compiler::movProcessing (int line) {
+	for (int j = 0; j < cmdAmount; j++) { //search command through the defined commands
+		if (userProgram[line].arg[0] == cmdList[j].name) {
+			machineCode += std::to_string (cmdList[j].code) + " ";
+			break;
+		}
+	}
+
 };

@@ -18,4 +18,4 @@ div:055
 mul:056
 sqrt:57
 cmp:201:052
-mov:252
+movN:252

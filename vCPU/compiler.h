@@ -12,10 +12,6 @@ const int DEFAULT_SIZE = 100;
 
 struct UserCommand
 {
-	std::string name;
-	int argNum;
-	std::string firstArg;
-	std::string secondArg;
 	std::vector<std::string> arg;
 };
 
@@ -37,7 +33,6 @@ class Compiler
 {
 private:
 	std::string& readBuffer;
-	char*  currWord;
 
 	FILE* programFile;
 	std::vector<UserCommand>& userProgram;
@@ -51,15 +46,19 @@ private:
 	int labelCount;
 
 	std::string& machineCode;
+	int errorCount;
 
 	void fileRead (FILE* file);
 	void assignString (std::string* name_, int* i);
 	int  readCommandCode (int* i);
 	void setCommand (std::string name, int code);
 	int  searchCommand (int line);
-	bool setRegister (std::string argument, int line);
-	int  labelAnalysis ();
+	void setRegister (std::string argument, int line);
+	void labelAnalysis ();
 	void skipSpaces (int* i);
+	void callProcessing (int line);
+	void movProcessing (int line);
+
 public:
 	Compiler (FILE* programFile_, FILE* configFile_);
 	~Compiler ();
