@@ -12,7 +12,7 @@ int Stack::size () {
 
 Stack::Stack (int capacity) :
 	capacity_ (capacity),
-	data_ (new int[capacity]),
+	data_ (new int[capacity] {}),
 	size_ (0)
 	{};
 

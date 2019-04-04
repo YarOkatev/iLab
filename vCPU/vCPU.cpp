@@ -5,7 +5,7 @@
 #include "vCPU.h"
 
 CpuMemory::CpuMemory ():
-	regArray (new int[8] {}),
+	regArray (new int[REG_NUM] {}),
 	memArray (new int[MEM_SIZE] {}),
 	currentPtr (0)
 	{};
@@ -123,16 +123,15 @@ void Processor::rcmp () {
 }
 
 void Processor::movN () {
-	int num = memory.getWord ();
-	memory.regArray[memory.getWord ()] = num;
+	int regNumber =  memory.getWord ();
+	memory.regArray[regNumber] = memory.getWord ();
 }
 
 void Processor::tact () {
 	int code = 0;
-	int a;
 	while (true) {
-		a = memory.memArray[memory.currentPtr];
 		code = memory.getWord ();
+		memory.regArray[SP] = stack.size () - 1;
 		switch (code) {
 			case 0: {
 				halt ();
@@ -210,8 +209,16 @@ void Processor::tact () {
 				write ();
 				break;
 			}
+			case 112: {
+				retR ();
+				break;
+			}
 			case 151: {
 				npush ();
+				break;
+			}
+			case 152: {
+				retN ();
 				break;
 			}
 			case 201: {
@@ -222,8 +229,20 @@ void Processor::tact () {
 				movN ();
 				break;
 			}
+			case 301: {
+				movSN ();
+				break;
+			}
+			case 302: {
+				movSR ();
+				break;
+			}
+			case 303: {
+				call ();
+				break;
+			}
 			default: {
-				std::cout << "afaf";
+				std::cout << "CPU looped :)";
 				loop ();
 			}
 		}
@@ -237,12 +256,15 @@ void Processor::write () {
 void Processor::dump () {
 	std::cout << "\n------------ DUMP ------------\n";
 	stack.dump ();
-	std::cout << "Current pointer: " << memory.currentPtr << "\n";
+	std::cout << "Current pointer: " << memory.currentPtr << " (" << memory.memArray[memory.currentPtr] << ")\n";
 	std::cout << "AX: " << memory.regArray[AX] << "\n";
 	std::cout << "BX: " << memory.regArray[BX] << "\n";
 	std::cout << "CX: " << memory.regArray[CX] << "\n";
 	std::cout << "DX: " << memory.regArray[DX] << "\n";
 	std::cout << "LX: " << memory.regArray[LX] << "\n";
+	std::cout << "SP: " << memory.regArray[SP] << "\n";
+	std::cout << "FP: " << memory.regArray[FP] << "\n";
+	std::cout << "RX: " << memory.regArray[RX] << "\n";
 	std::cout << "------------------------------\n\n";
 }
 
@@ -260,6 +282,52 @@ void Processor::movSR () {
 		*currReg = stack.data ()[memory.regArray[memory.getWord ()] + memory.regArray[memory.getWord ()]];
 	else
 		*currReg = stack.data ()[memory.regArray[memory.getWord ()] - memory.regArray[memory.getWord ()]];
+}
+
+void Processor::retR () {
+	memory.regArray[RX] = memory.regArray[memory.getWord ()];
+	unstacking ();
+}
+
+void Processor::retN () {
+	memory.regArray[RX] = memory.getWord ();
+	unstacking ();
+}
+
+void Processor::call () {
+	int argNum = memory.getWord ();
+	stacking (argNum);
+	for (; argNum > 0; argNum--) {
+		if (memory.getWord () == 1)
+			stack.push (memory.getWord ());
+		else
+			stack.push (memory.regArray[memory.getWord ()]);
+	}
+	memory.currentPtr = memory.getWord ();
+}
+
+void Processor::stacking (int argNum) {
+	stack.push (memory.regArray[AX]);
+	stack.push (memory.regArray[BX]);
+	stack.push (memory.regArray[CX]);
+	stack.push (memory.regArray[DX]);
+	stack.push (memory.regArray[SP]);
+	stack.push (memory.regArray[FP]);
+	stack.push (memory.currentPtr + argNum * 2 + 1);
+	memory.regArray[FP] = stack.size ();
+}
+
+void Processor::unstacking () {
+	while (stack.size () != memory.regArray[FP]) {
+		stack.pop ();
+	}
+	memory.currentPtr = stack.pop ();
+	memory.regArray[FP] = stack.pop ();
+	memory.regArray[SP] = stack.pop ();
+	memory.regArray[DX] = stack.pop ();
+	memory.regArray[CX] = stack.pop ();
+	memory.regArray[BX] = stack.pop ();
+	memory.regArray[AX] = stack.pop ();
 }
 
 void startCPU (std::string fileName) {

@@ -1,0 +1,18 @@
+mov bx, 10
+mov ax, 1
+push 0
+call ass
+print ax
+halt
+
+:ass
+    push ax
+    push 1
+    add
+    pop ax
+    cmp ax, bx
+    je rr
+    call ass
+    :rr
+    print rx
+    ret ax

@@ -11,7 +11,8 @@
 #include "stack.h"
 
 const int MEM_SIZE = 1024;
-const int STACK_SIZE = 256;
+const int STACK_SIZE = 2048;
+const int REG_NUM = 8;
 
 enum {AX, BX, CX, DX, LX, SP, FP, RX};  //SP - Stack Pointer, FP - Frame Pointer, RX - Return
 
@@ -65,8 +66,12 @@ private:
 
 	void movSN (); //301
 	void movSR (); //302
-	void ret ();
-	void call ();
+	void retR (); //112
+	void retN (); //152
+	void call (); //303
+
+	void stacking (int argNum);
+	void unstacking ();
 public:
 	Processor (FILE* bootFile);
 	void tact ();

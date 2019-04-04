@@ -56,8 +56,14 @@ void Compiler::assignString (std::string* name_, int* i) {
 
 void Compiler::skipSpaces (int* i) {
 	while ((isspace (readBuffer[*i]) || readBuffer[*i] == '[' || readBuffer[*i] == ']' || readBuffer[*i] == '(' \
-			|| readBuffer[*i] == ')' || readBuffer[*i] == ',') && readBuffer[*i] != '\n' && *i <= readBuffer.size ())
-		*i += 1;
+			|| readBuffer[*i] == ')' || readBuffer[*i] == ',' || readBuffer[*i] == ';') && readBuffer[*i] != '\n' && *i <= readBuffer.size ())
+		if (readBuffer[*i] == ';') {
+			while (readBuffer[*i] != '\n') { //skip comments
+				*i += 1;
+			}
+		} else {
+			*i += 1;
+		}
 }
 
 void Compiler::readCommandList () {
@@ -345,8 +351,8 @@ void Compiler::callProcessing (int line) {
 			break;
 		}
 	}
-	if (!isDigit (userProgram[line].arg[1]))
-		machineCode += userProgram[line].arg[1] + ' ';
+//	if (!isDigit (userProgram[line].arg[1]))
+//		machineCode += userProgram[line].arg[1] + ' ';
 	int strPos = machineCode.size ();
 	int k = 2;
 	while (!userProgram[line].arg[k].empty ()) {
@@ -359,15 +365,57 @@ void Compiler::callProcessing (int line) {
 		}
 		k++;
 	}
+	if (!isDigit (userProgram[line].arg[1]))
+		machineCode += userProgram[line].arg[1] + ' ';
 	machineCode.insert (strPos, std::to_string (k - 2) + " ");
 }
 
 void Compiler::movProcessing (int line) {
-	for (int j = 0; j < cmdAmount; j++) { //search command through the defined commands
-		if (userProgram[line].arg[0] == cmdList[j].name) {
-			machineCode += std::to_string (cmdList[j].code) + " ";
-			break;
-		}
+	int i = 1;
+	int errorBefore = errorCount;
+	int mask[5] {};
+	while (!userProgram[line].arg[i].empty ()) {
+		mask[i - 1] = isDigit (userProgram[line].arg[i]);
+		i++;
 	}
-
-};
+	i--;
+	if (i == 2 && mask[0] == 0 && mask[1] == 1) {
+		machineCode += "252 ";
+		setRegister (userProgram[line].arg[1], line);
+		machineCode += userProgram[line].arg[2] + " ";
+	} else if (i == 4 && mask[0] == 0 && mask[1] == 0 && mask[3] == 1 \
+				&& (userProgram[line].arg[3] == "+" || userProgram[line].arg[3] == "-")) {
+		machineCode += "301 ";
+		setRegister (userProgram[line].arg[1], line);
+		if (userProgram[line].arg[3] == "+")
+			machineCode += "1 ";
+		else if (userProgram[line].arg[3] == "-")
+			machineCode += "0 ";
+		else
+			errorCount++;
+		setRegister (userProgram[line].arg[2], line);
+		machineCode += userProgram[line].arg[4] + " ";
+	} else if (i == 4 && mask[0] == 0 && mask[1] == 0 && mask[3] == 0 \
+				&& (userProgram[line].arg[3] == "+" || userProgram[line].arg[3] == "-")) {
+		machineCode += "302 ";
+		setRegister (userProgram[line].arg[1], line);
+		if (userProgram[line].arg[3] == "+")
+			machineCode += "1 ";
+		else if (userProgram[line].arg[3] == "-")
+			machineCode += "0 ";
+		else
+			errorCount++;
+		setRegister (userProgram[line].arg[2], line);
+		setRegister (userProgram[line].arg[4], line);
+	} else {
+		errorCount++;
+	}
+	if (errorBefore < errorCount) {
+		std::string errorMsg = userProgram[line].arg[0] + ' ' + userProgram[line].arg[1];
+		if (!userProgram[line].arg[2].empty ())
+			errorMsg += ", " + userProgram[line].arg[2];
+		std::cout << "Line " << line + 1 << ": no matching command for \n";
+		std::cout << errorMsg << '\n';
+		std::cout << "^^^^\n\n";
+	}
+}; //TODO вынести коды

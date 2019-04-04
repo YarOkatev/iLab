@@ -2,6 +2,7 @@ halt:0
 dump:1
 
 top:101
+ret:112:152
 push:103:151
 pop:104:051
 jmp:105
@@ -18,4 +19,6 @@ div:055
 mul:056
 sqrt:57
 cmp:201:052
-movN:252
+mov:252:301:302
+
+call:303
