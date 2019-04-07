@@ -43,22 +43,24 @@ void Compiler::readUserProgram () {
 				break;
 		}
 		programLen++;
+		if (programLen + 1 > userProgram.capacity ()) //resize vector
+			userProgram.resize (userProgram.capacity () * 2);
 	}
 }
 
 void Compiler::assignString (std::string* name_, int* i) {
-	while ((isalnum (readBuffer[*i]) || (readBuffer[*i] == '-') || (readBuffer[*i] == '+') || (readBuffer[*i] == ':'))\
+	while ((isalnum (readBuffer[*i]) || readBuffer[*i] == '-' || readBuffer[*i] == '+' || readBuffer[*i] == ':') \
 			&& *i <= readBuffer.size ()) {
 		*name_ += readBuffer[*i];
 		*i += 1;
 	}
 }
 
-void Compiler::skipSpaces (int* i) {
-	while ((isspace (readBuffer[*i]) || readBuffer[*i] == '[' || readBuffer[*i] == ']' || readBuffer[*i] == '(' \
-			|| readBuffer[*i] == ')' || readBuffer[*i] == ',' || readBuffer[*i] == ';') && readBuffer[*i] != '\n' && *i <= readBuffer.size ())
-		if (readBuffer[*i] == ';') {
-			while (readBuffer[*i] != '\n') { //skip comments
+void Compiler::skipSpaces (int* i) { //TODO simple check
+	while (!(isalnum (readBuffer[*i]) || readBuffer[*i] == '+' || readBuffer[*i] == '-' || readBuffer[*i] == ':') \
+			&& *i <= readBuffer.size () && readBuffer[*i] != '\n')
+		if (readBuffer[*i] == ';') { //skip comments
+			while (readBuffer[*i] != '\n') {
 				*i += 1;
 			}
 		} else {
@@ -86,7 +88,7 @@ void Compiler::readCommandList () {
 			cmdAmount++;
 		} while (readBuffer[i] == ':');
 
-		if (cmdAmount + 5 > cmdList.capacity ()) //resize vector
+		if (cmdAmount + 1 > cmdList.capacity ()) //resize vector
 			cmdList.resize (cmdList.capacity () * 2);
 
 		name_.clear ();
@@ -133,7 +135,7 @@ void Compiler::generateMachineCode (std::string exeName) {
 			continue;
 
 		if (userProgram[i].arg[0][0] == ':') { //labels check
-			if (labelCount + 5 > labelList.capacity ())
+			if (labelCount + 1 > labelList.capacity ())
 				labelList.resize (labelList.capacity () * 2);
 			labelList[labelCount].name = userProgram[i].arg[0];
 			machineCode += userProgram[i].arg[0] + ' ';
@@ -175,11 +177,15 @@ void Compiler::generateMachineCode (std::string exeName) {
 
 	labelAnalysis (); //label processing
 
+	compilationResult (exeName);
+}
+
+void Compiler::compilationResult (std::string &exeName) {
 	if (errorCount == 0) {
 		std::cout << "Compilation successful\n";
 		exeName += ".vcpu";
 		FILE* exeFile = fopen (exeName.data (), "w");
-		fwrite (machineCode.data (), sizeof(char), machineCode.size (), exeFile);
+		fwrite (machineCode.data (), sizeof (char), machineCode.size (), exeFile);
 		fclose (exeFile);
 		return;
 	} else {
@@ -344,15 +350,13 @@ Compiler::~Compiler () {
 	delete &machineCode;
 }
 
-void Compiler::callProcessing (int line) {
+void Compiler::callProcessing (int line) { // [CMD] [ARG_NUM] [ARG_TYPE 1/0 - number/reg] [ARG] ... [ADDRESS]
 	for (int j = 0; j < cmdAmount; j++) { //search command through the defined commands
 		if (userProgram[line].arg[0] == cmdList[j].name) {
 			machineCode += std::to_string (cmdList[j].code) + " ";
 			break;
 		}
 	}
-//	if (!isDigit (userProgram[line].arg[1]))
-//		machineCode += userProgram[line].arg[1] + ' ';
 	int strPos = machineCode.size ();
 	int k = 2;
 	while (!userProgram[line].arg[k].empty ()) {
@@ -379,13 +383,13 @@ void Compiler::movProcessing (int line) {
 		i++;
 	}
 	i--;
-	if (i == 2 && mask[0] == 0 && mask[1] == 1) {
+	if (i == 2 && mask[0] == 0 && mask[1] == 1) { // [CMD] [DESTINATION] [NUMBER]
 		machineCode += "252 ";
 		setRegister (userProgram[line].arg[1], line);
 		machineCode += userProgram[line].arg[2] + " ";
 	} else if (i == 4 && mask[0] == 0 && mask[1] == 0 && mask[3] == 1 \
 				&& (userProgram[line].arg[3] == "+" || userProgram[line].arg[3] == "-")) {
-		machineCode += "301 ";
+		machineCode += "301 ";							// [CMD] [DESTINATION] [ADD/SUB 1/0] [FIRST] [SECOND]
 		setRegister (userProgram[line].arg[1], line);
 		if (userProgram[line].arg[3] == "+")
 			machineCode += "1 ";

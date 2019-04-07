@@ -65,6 +65,7 @@ public:
 	void readUserProgram ();
 	void readCommandList ();
 	void generateMachineCode (std::string exeName);
+	void compilationResult (std::string &exeName);
 };
 
 size_t fileSize (FILE* file);

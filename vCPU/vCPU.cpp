@@ -14,8 +14,9 @@ void CpuMemory::flashMem (FILE* bootFile) {
 	int i = 0;
 	while (i < MEM_SIZE && fscanf (bootFile, "%d", &memArray[i]) != EOF)
 		i++;
-	if (fscanf (bootFile, "%d") != EOF && i == MEM_SIZE) {
-		std::cout << "Program is too large\n It should include less than " << MEM_SIZE << " codes\n";
+	if (fscanf (bootFile, "%d", memArray) != EOF && i == MEM_SIZE) {
+		std::cout << "Program is too large. It should include less than " << MEM_SIZE << " codes\n";
+		exit (1);
 	}
 	fclose (bootFile);
 }
@@ -31,7 +32,7 @@ CpuMemory::~CpuMemory () {
 }
 
 void Processor::halt () {
-	std::cout << "vCPU stopped\n";
+	std::cout << "\nvCPU stopped\n";
 	exit (0);
 }
 
@@ -242,7 +243,7 @@ void Processor::tact () {
 				break;
 			}
 			default: {
-				std::cout << "CPU looped :)";
+				std::cout << "CPU looped :)\n";
 				loop ();
 			}
 		}
@@ -265,7 +266,7 @@ void Processor::dump () {
 	std::cout << "SP: " << memory.regArray[SP] << "\n";
 	std::cout << "FP: " << memory.regArray[FP] << "\n";
 	std::cout << "RX: " << memory.regArray[RX] << "\n";
-	std::cout << "------------------------------\n\n";
+	std::cout << "------------------------------\n";
 }
 
 void Processor::movSN () {
@@ -318,7 +319,7 @@ void Processor::stacking (int argNum) {
 }
 
 void Processor::unstacking () {
-	while (stack.size () != memory.regArray[FP]) {
+	while (stack.size () != memory.regArray[FP]) { //cleaning stack
 		stack.pop ();
 	}
 	memory.currentPtr = stack.pop ();
