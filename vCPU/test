@@ -6,6 +6,7 @@ print ax
 halt
 
 :ass
+    dump
     push ax
     push 1
     add

@@ -10,11 +10,10 @@ int Stack::size () {
 	return size_;
 }
 
-Stack::Stack (int capacity) :
+Stack::Stack (int capacity):
 	capacity_ (capacity),
 	data_ (new int[capacity] {}),
-	size_ (0)
-	{};
+	size_ (0) {};
 
 Stack::~Stack () {
 	delete[] data_;
@@ -46,7 +45,7 @@ int Stack::top () {
 	if (!empty ())
 		return data_[size_ - 1];
 	printf ("Stack is empty\n");
-return -1;
+	return -1;
 }
 
 bool Stack::empty () {

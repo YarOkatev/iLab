@@ -56,7 +56,7 @@ void Compiler::assignString (std::string* name_, int* i) {
 	}
 }
 
-void Compiler::skipSpaces (int* i) { //TODO simple check
+void Compiler::skipSpaces (int* i) {
 	while (!(isalnum (readBuffer[*i]) || readBuffer[*i] == '+' || readBuffer[*i] == '-' || readBuffer[*i] == ':') \
 			&& *i <= readBuffer.size () && readBuffer[*i] != '\n')
 		if (readBuffer[*i] == ';') { //skip comments
@@ -422,4 +422,4 @@ void Compiler::movProcessing (int line) {
 		std::cout << errorMsg << '\n';
 		std::cout << "^^^^\n\n";
 	}
-}; //TODO вынести коды
+};
