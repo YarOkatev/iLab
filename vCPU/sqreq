@@ -1,0 +1,89 @@
+write ax
+write bx
+write cx
+push ax
+push 0
+cmp
+pop
+je lin
+jmp disc
+
+:lin
+    push bx
+    push 0
+    cmp
+    je error
+    pop
+    push cx
+    push -1
+    mul
+    div
+    pop dx
+    print dx
+    halt
+
+:disc
+    push 4
+    push cx
+    mul
+    mul
+    push bx
+    push bx
+    mul
+    sub
+    push 0
+    cmp
+    ja error
+    je zero
+    pop
+    sqrt
+    pop dx
+    push 1
+    jmp root
+  :second
+    push dx
+    push -1
+    mul
+    pop dx
+    push 0
+    jmp root
+
+:root
+    push 2
+    push ax
+    mul
+    push dx
+    push bx
+    push -1
+    mul
+    add
+    div
+    pop cx
+    print cx
+    push 0
+    cmp
+    pop
+    pop
+    jne second
+    halt
+
+:error
+    mov dx, 0
+    print dx
+    print dx
+    print dx
+    halt
+
+:zero
+    pop
+    pop
+    push 2
+    push ax
+    mul
+    push bx
+    push -1
+    mul
+    div
+    pop dx
+    print dx
+    halt

@@ -5,8 +5,8 @@
 #ifndef STACK_STACK_H
 #define STACK_STACK_H
 
-#include <cassert>;
-#include <cstdio>;
+#include <cassert>
+#include <cstdio>
 
 class Stack
 {
@@ -27,7 +27,10 @@ public:
 	void sub ();
 	void div ();
 	void mul ();
+	void ssqrt ();
 	int cmp ();
+	void dump ();
+	int* data ();
 };
 
 #endif //STACK_STACK_H

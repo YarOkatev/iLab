@@ -9,7 +9,6 @@ int main () {
 	for (int i = 0; i < 11; i++) {
 		st2.push (i + 100);
 	}
-	//st.swap (st2);
 	printf ("%d", st.pop ());
 	printf ("dd %d %d\n", st.size (), st2.size ());
 	return 0;
