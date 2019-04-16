@@ -51,9 +51,9 @@ private:
 	void fileRead (FILE* file);
 	void assignString (std::string* name_, int* i);
 	int  readCommandCode (int* i);
-	void setCommand (std::string name, int code);
+	void setCommand (const std::string &name_, int code_);
 	int  searchCommand (int line);
-	void setRegister (std::string argument, int line);
+	void setRegister (const std::string& argument, int line);
 	void labelAnalysis ();
 	void skipSpaces (int* i);
 	void callProcessing (int line);

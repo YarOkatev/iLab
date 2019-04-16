@@ -8,7 +8,7 @@ CpuMemory::CpuMemory ():
 	regArray (new int[REG_NUM] {}),
 	memArray (new int[MEM_SIZE] {}),
 	currentPtr (0)
-	{};
+	{}
 
 void CpuMemory::flashMem (FILE* bootFile) {
 	int i = 0;

@@ -16,7 +16,7 @@ Compiler::Compiler (FILE* programFile_, FILE* configFile_):
 		cmdAmount (0),
 		labelCount (0),
 		errorCount (0)
-{};
+{}
 
 void Compiler::fileRead (FILE* file) {
 	if (!file) {
@@ -106,7 +106,7 @@ int Compiler::readCommandCode (int* i) {
 	return code;
 }
 
-void Compiler::setCommand (std::string name_, int code_) {
+void Compiler::setCommand (const std::string& name_, int code_) {
 	cmdList[cmdAmount].name = name_;
 	cmdList[cmdAmount].code = code_;
 	if (code_ < 100) {
@@ -194,7 +194,7 @@ void Compiler::compilationResult (std::string &exeName) {
 	}
 }
 
-void Compiler::setRegister (std::string argument, int line) {
+void Compiler::setRegister (const std::string& argument, int line) {
 	if (argument == "ax") {
 		machineCode += "0 ";
 	} else if (argument == "bx") {
@@ -422,4 +422,4 @@ void Compiler::movProcessing (int line) {
 		std::cout << errorMsg << '\n';
 		std::cout << "^^^^\n\n";
 	}
-};
+}

@@ -13,13 +13,13 @@ int Stack::size () {
 Stack::Stack (int capacity):
 	capacity_ (capacity),
 	data_ (new int[capacity] {}),
-	size_ (0) {};
+	size_ (0) {}
 
 Stack::~Stack () {
 	delete[] data_;
 	capacity_ = -1;
 	size_ = -1;
-};
+}
 
 int Stack::pop () {
 	if (empty ()) {
