@@ -1,1 +1,1 @@
-# iLab -- programming course for DREC students
+# iLab — programming course for DREC students
